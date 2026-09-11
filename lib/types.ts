@@ -1,0 +1,65 @@
+export type ThinkingSkill =
+  | "Recall Fundamentals"
+  | "Understand Core Ideas"
+  | "Apply Principles"
+  | "Analyse the Problem"
+  | "Review and Justify"
+  | "Design and Build";
+
+export type ActivityIcon =
+  | "frontend"
+  | "backend"
+  | "database"
+  | "integration"
+  | "cloud";
+
+export interface Resource {
+  label: string;
+  /** null when the resource is a placeholder with no public URL */
+  url: string | null;
+}
+
+export interface SubActivity {
+  /** local code, e.g. "1.4" */
+  id: string;
+  title: string;
+  hours: number;
+  tag: ThinkingSkill;
+  /** what the student submits */
+  evidence: string;
+  /** the "Meets standard" grading threshold */
+  standard: string;
+  /** resource ids resolved against RESOURCES */
+  resources: string[];
+}
+
+export interface Activity {
+  /** formal id, e.g. "CS102-ACT-01" */
+  id: string;
+  part: "I" | "II";
+  icon: ActivityIcon;
+  hours: number;
+  title: string;
+  desc: string;
+  outcome: string;
+  subs: SubActivity[];
+}
+
+export interface Course {
+  university: string;
+  department: string;
+  code: string;
+  title: string;
+  semester: string;
+  ltp: string;
+  credits: number;
+  totalHours: number;
+}
+
+export interface Gate {
+  id: string;
+  title: string;
+  note: string;
+  evidence: string;
+  standard: string;
+}

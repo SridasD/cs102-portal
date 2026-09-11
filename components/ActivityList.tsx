@@ -1,0 +1,289 @@
+"use client";
+
+import {
+  ChevronDown,
+  ClipboardCheck,
+  FileCheck2,
+  Search,
+  ShieldCheck,
+  X,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  ACTIVITIES,
+  ACTIVITY_INDEX,
+  ALL_TAGS,
+  GATE,
+  PART_I_HOURS,
+  PART_II_HOURS,
+  TAG_STYLES,
+} from "@/lib/curriculum";
+import type { SubActivity, ThinkingSkill } from "@/lib/types";
+import { ActivityCard } from "./ActivityCard";
+import { Badge } from "./Badge";
+
+function subMatches(sub: SubActivity, q: string, tags: ThinkingSkill[]): boolean {
+  const tagOk = tags.length === 0 || tags.includes(sub.tag);
+  if (!tagOk) return false;
+  if (!q) return true;
+  const hay = `${sub.id} ${sub.title} ${sub.tag} ${sub.evidence} ${sub.standard}`.toLowerCase();
+  return hay.includes(q);
+}
+
+function PartHeader({
+  color,
+  label,
+  hours,
+}: {
+  color: "indigo" | "sky";
+  label: string;
+  hours: number;
+}) {
+  const dot = color === "sky" ? "bg-sky-500" : "bg-indigo-500";
+  const chip =
+    color === "sky"
+      ? "bg-sky-50 text-sky-700 ring-sky-200"
+      : "bg-indigo-50 text-indigo-700 ring-indigo-200";
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`h-2 w-2 rounded-full ${dot}`} aria-hidden="true" />
+      <h2 className="text-sm font-semibold text-slate-800">{label}</h2>
+      <div className="h-px flex-1 bg-slate-200" aria-hidden="true" />
+      <Badge className={`${chip} tabular-nums`}>
+        {hours} hrs
+      </Badge>
+    </div>
+  );
+}
+
+function GateCard() {
+  const [open, setOpen] = useState(false);
+  const panelId = "gate-panel";
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 shadow-sm">
+      <span className="absolute inset-y-0 left-0 w-1 bg-amber-400" aria-hidden="true" />
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-4 px-5 py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-500 sm:px-6"
+      >
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+          <ShieldCheck className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-xs font-medium text-amber-700">{GATE.id} · Prerequisite gate</div>
+          <div className="mt-0.5 text-base font-semibold text-amber-900">{GATE.title}</div>
+          <div className="mt-0.5 text-sm text-amber-800">{GATE.note}</div>
+        </div>
+        <Badge className="hidden bg-white text-amber-700 ring-amber-200 sm:inline-flex">
+          Pass / fail
+        </Badge>
+        <ChevronDown
+          className={`h-5 w-5 shrink-0 text-amber-500 transition-transform duration-300 ${
+            open ? "rotate-180" : ""
+          }`}
+          aria-hidden="true"
+        />
+      </button>
+      <div
+        id={panelId}
+        aria-hidden={!open}
+        className="grid transition-all duration-300 ease-out"
+        style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <div className="space-y-3 border-t border-amber-200 px-5 py-4 text-sm sm:px-6">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-medium text-amber-700">
+                <FileCheck2 className="h-3.5 w-3.5" /> What you submit
+              </div>
+              <p className="mt-1 leading-relaxed text-amber-900">{GATE.evidence}</p>
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-medium text-amber-700">
+                <ClipboardCheck className="h-3.5 w-3.5" /> Standard
+              </div>
+              <p className="mt-1 leading-relaxed text-amber-900">{GATE.standard}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ActivityList() {
+  const [manualOpen, setManualOpen] = useState<Set<string>>(
+    () => new Set([ACTIVITIES[0].id]),
+  );
+  const [query, setQuery] = useState("");
+  const [tags, setTags] = useState<ThinkingSkill[]>([]);
+
+  const q = query.trim().toLowerCase();
+  const filtering = q.length > 0 || tags.length > 0;
+
+  const computed = useMemo(() => {
+    return ACTIVITIES.map((a) => {
+      const titleHit = q.length > 0 && `${a.id} ${a.title} ${a.desc}`.toLowerCase().includes(q);
+      const visibleSubs = a.subs.filter(
+        (s) =>
+          subMatches(s, q, tags) ||
+          (titleHit && (tags.length === 0 || tags.includes(s.tag))),
+      );
+      return { activity: a, visibleSubs, hasMatch: visibleSubs.length > 0 };
+    });
+  }, [q, tags]);
+
+  const visible = filtering ? computed.filter((c) => c.hasMatch) : computed;
+  const totalHits = computed.reduce((n, c) => n + c.visibleSubs.length, 0);
+
+  const toggle = (id: string) =>
+    setManualOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const expandAll = () => setManualOpen(new Set(ACTIVITIES.map((a) => a.id)));
+  const collapseAll = () => setManualOpen(new Set());
+  const isOpen = (id: string) => (filtering ? true : manualOpen.has(id));
+
+  const toggleTag = (t: ThinkingSkill) =>
+    setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+
+  const partI = visible.filter((c) => c.activity.part === "I");
+  const partII = visible.filter((c) => c.activity.part === "II");
+
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
+      {/* Filter bar */}
+      <div className="sticky top-0 z-10 -mx-5 mb-6 border-b border-slate-200 bg-slate-50/90 px-5 py-3 backdrop-blur sm:-mx-8 sm:px-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative w-full sm:max-w-sm">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search activities, evidence, standards…"
+              aria-label="Search the curriculum"
+              className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-slate-800 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-slate-400 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 text-sm">
+            <span className="tabular-nums text-slate-400">
+              {filtering ? `${totalHits} matches` : `${ACTIVITIES.length} activities`}
+            </span>
+            <span className="text-slate-300">·</span>
+            <button
+              onClick={expandAll}
+              className="rounded px-1.5 py-0.5 text-indigo-600 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            >
+              Expand all
+            </button>
+            <button
+              onClick={collapseAll}
+              className="rounded px-1.5 py-0.5 text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            >
+              Collapse
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {ALL_TAGS.map((t) => {
+            const active = tags.includes(t);
+            return (
+              <button
+                key={t}
+                type="button"
+                aria-pressed={active}
+                onClick={() => toggleTag(t)}
+                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                  active
+                    ? `${TAG_STYLES[t]} ring-2`
+                    : "bg-white text-slate-500 ring-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <GateCard />
+
+      {partI.length > 0 && (
+        <div className="mt-8">
+          <PartHeader color="indigo" label="Part I — Full Stack Architecture" hours={PART_I_HOURS} />
+          <div className="mt-4 space-y-3">
+            {partI.map((c) => (
+              <ActivityCard
+                key={c.activity.id}
+                activity={c.activity}
+                index={ACTIVITY_INDEX[c.activity.id]}
+                open={isOpen(c.activity.id)}
+                onToggle={() => toggle(c.activity.id)}
+                visibleSubs={c.visibleSubs}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {partII.length > 0 && (
+        <div className="mt-10">
+          <PartHeader color="sky" label="Part II — Cloud-Native Development" hours={PART_II_HOURS} />
+          <div className="mt-4 space-y-3">
+            {partII.map((c) => (
+              <ActivityCard
+                key={c.activity.id}
+                activity={c.activity}
+                index={ACTIVITY_INDEX[c.activity.id]}
+                open={isOpen(c.activity.id)}
+                onToggle={() => toggle(c.activity.id)}
+                visibleSubs={c.visibleSubs}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {visible.length === 0 && (
+        <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+          <p className="text-sm font-medium text-slate-700">No sub-activities match your filters.</p>
+          <p className="mt-1 text-sm text-slate-500">
+            Clear the search or remove a tag to see the full curriculum.
+          </p>
+          <button
+            onClick={() => {
+              setQuery("");
+              setTags([]);
+            }}
+            className="mt-4 rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          >
+            Reset filters
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
