@@ -1,4 +1,4 @@
-import type { Activity, Course, Gate, Resource, ThinkingSkill } from "./types";
+import type { Activity, Course, Resource, ThinkingSkill } from "./types";
 
 export const RESOURCES: Record<string, Resource> = {
   M01: { label: "MOOC — Full Stack Open", url: "https://fullstackopen.com/en/" },
@@ -34,6 +34,7 @@ export const RESOURCES: Record<string, Resource> = {
   R27: { label: "OWASP Cheat Sheet Series", url: "https://cheatsheetseries.owasp.org/" },
   R28: { label: "OWASP Dependency-Check", url: "https://owasp.org/www-project-dependency-check/" },
   R29: { label: "OWASP ZAP", url: "https://www.zaproxy.org/" },
+  R30: { label: "Next.js — Learn and Documentation", url: "https://nextjs.org/learn" },
 };
 
 /** Tailwind classes per Thinking-Skill tag (badge fill + ring). */
@@ -59,16 +60,6 @@ export const COURSE: Course = {
   totalHours: 120,
 };
 
-export const GATE: Gate = {
-  id: "CS102-SUB-0.0",
-  title: "Stack Declaration",
-  note: "This course is stack-agnostic. Declare your chosen frontend framework, backend framework/language and database before graded evidence is assessed.",
-  evidence:
-    "A short Stack Declaration record naming the chosen frontend framework, backend framework/language, database and key libraries, with a one-paragraph justification.",
-  standard:
-    "The declared stack can satisfy every required evidence item; PostgreSQL is the reference database, and an equivalent may be approved by the Course Head. This is a pass/fail prerequisite gate.",
-};
-
 export const ACTIVITIES: Activity[] = [
   {
     id: "CS102-ACT-01", part: "I", icon: "frontend", hours: 22,
@@ -81,7 +72,7 @@ export const ACTIVITIES: Activity[] = [
       { id: "1.2", title: "Semantic HTML and accessible forms", hours: 3, tag: "Apply Principles", evidence: "Semantic page, validated form and accessibility-check report.", standard: "Uses appropriate landmarks, labels, input types, validation messages and keyboard access per WCAG 2.2.", resources: ["R02", "R03"] },
       { id: "1.3", title: "Responsive CSS and mobile-first design", hours: 3, tag: "Design and Build", evidence: "Responsive implementation and screenshots at agreed breakpoints.", standard: "Layout remains readable and usable without clipping, overflow or inaccessible contrast.", resources: ["R04", "R03"] },
       { id: "1.4", title: "Modern JavaScript and asynchronous programming", hours: 4, tag: "Apply Principles", evidence: "JavaScript modules, asynchronous workflow and focused tests.", standard: "Uses modern syntax, promises or async/await, error handling and safe DOM interaction correctly.", resources: ["R05"] },
-      { id: "1.5", title: "Component architecture (chosen framework)", hours: 4, tag: "Design and Build", evidence: "Component hierarchy, source code and reviewed pull request.", standard: "Components are reusable, cohesive, testable and separated from data-access concerns.", resources: ["R06", "R16"] },
+      { id: "1.5", title: "Component architecture with React and Next.js", hours: 4, tag: "Design and Build", evidence: "React component hierarchy, Next.js source code and reviewed pull request.", standard: "React components are reusable, cohesive and testable; Next.js routes and rendering boundaries are clear; UI concerns remain separated from data access.", resources: ["R06", "R30", "R16"] },
       { id: "1.6", title: "State management and routing", hours: 3, tag: "Design and Build", evidence: "Route map, state model and working navigation.", standard: "State ownership is predictable; routes, parameters and protected transitions behave correctly.", resources: ["R06", "R07"] },
       { id: "1.7", title: "API integration and user-interface states", hours: 3, tag: "Design and Build", evidence: "Integrated screen and state matrix covering loading, empty, success and error.", standard: "UI conforms to the API contract and provides clear, recoverable states.", resources: ["R06", "R08"] },
     ],

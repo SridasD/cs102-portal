@@ -55,11 +55,3 @@ export interface Course {
   credits: number;
   totalHours: number;
 }
-
-export interface Gate {
-  id: string;
-  title: string;
-  note: string;
-  evidence: string;
-  standard: string;
-}

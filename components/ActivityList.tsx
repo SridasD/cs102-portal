@@ -1,11 +1,7 @@
 "use client";
 
 import {
-  ChevronDown,
-  ClipboardCheck,
-  FileCheck2,
   Search,
-  ShieldCheck,
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -13,7 +9,6 @@ import {
   ACTIVITIES,
   ACTIVITY_INDEX,
   ALL_TAGS,
-  GATE,
   PART_I_HOURS,
   PART_II_HOURS,
   TAG_STYLES,
@@ -52,64 +47,6 @@ function PartHeader({
       <Badge className={`${chip} tabular-nums`}>
         {hours} hrs
       </Badge>
-    </div>
-  );
-}
-
-function GateCard() {
-  const [open, setOpen] = useState(false);
-  const panelId = "gate-panel";
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 shadow-sm">
-      <span className="absolute inset-y-0 left-0 w-1 bg-amber-400" aria-hidden="true" />
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-4 px-5 py-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-500 sm:px-6"
-      >
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-          <ShieldCheck className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-xs font-medium text-amber-700">{GATE.id} · Prerequisite gate</div>
-          <div className="mt-0.5 text-base font-semibold text-amber-900">{GATE.title}</div>
-          <div className="mt-0.5 text-sm text-amber-800">{GATE.note}</div>
-        </div>
-        <Badge className="hidden bg-white text-amber-700 ring-amber-200 sm:inline-flex">
-          Pass / fail
-        </Badge>
-        <ChevronDown
-          className={`h-5 w-5 shrink-0 text-amber-500 transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-          aria-hidden="true"
-        />
-      </button>
-      <div
-        id={panelId}
-        aria-hidden={!open}
-        className="grid transition-all duration-300 ease-out"
-        style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
-      >
-        <div className="overflow-hidden">
-          <div className="space-y-3 border-t border-amber-200 px-5 py-4 text-sm sm:px-6">
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-medium text-amber-700">
-                <FileCheck2 className="h-3.5 w-3.5" /> What you submit
-              </div>
-              <p className="mt-1 leading-relaxed text-amber-900">{GATE.evidence}</p>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 text-xs font-medium text-amber-700">
-                <ClipboardCheck className="h-3.5 w-3.5" /> Standard
-              </div>
-              <p className="mt-1 leading-relaxed text-amber-900">{GATE.standard}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
@@ -229,10 +166,8 @@ export function ActivityList() {
         </div>
       </div>
 
-      <GateCard />
-
       {partI.length > 0 && (
-        <div className="mt-8">
+        <div>
           <PartHeader color="indigo" label="Part I — Full Stack Architecture" hours={PART_I_HOURS} />
           <div className="mt-4 space-y-3">
             {partI.map((c) => (
