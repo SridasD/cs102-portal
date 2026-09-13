@@ -1,169 +1,169 @@
 # Activity and Sub-Activity Fields Explanation
 
-**Programme:** M.Sc. Data Science and Product Development (MSDSP)  
-**System:** MSDSP Applied Learning Portal  
-**Document Type:** Field Reference & Specification  
-**Governing Documents:** [`docs/ACTIVITY_AND_SUB_ACTIVITY_WORKFLOW.md`](file:///d:/Sridas%20-%20Old%20Lap/WRKSPC_ANTIGRAVITY/msdsp-portal-v4/docs/ACTIVITY_AND_SUB_ACTIVITY_WORKFLOW.md), [`docs/FULL_STACK_DEVELOPMENT_ACTIVITY_AND_SUB_ACTIVITIES.md`](file:///d:/Sridas%20-%20Old%20Lap/WRKSPC_ANTIGRAVITY/msdsp-portal-v4/docs/FULL_STACK_DEVELOPMENT_ACTIVITY_AND_SUB_ACTIVITIES.md)
+**Programme:** M.Sc. Data Science and Product Development (MSDSPD 2026 Batch)  
+**System:** MSDSPD Applied Learning Portal (`msdspd-course-2026`)  
+**Document Type:** Field Reference & Technical Specification  
+**Related Documents:** [`docs/MSc-DS-Product-Development-Course-Plan.md`](./MSc-DS-Product-Development-Course-Plan.md), [`docs/SIMPLE_TERMINOLOGY_LEARNING_GUIDE.md`](./SIMPLE_TERMINOLOGY_LEARNING_GUIDE.md)
 
 ---
 
 ## 1. Overview and Structural Hierarchy
 
-In the MSDSP framework, learning is structured hierarchically from programme governance down to executable student tasks:
+In the MSDSPD framework, learning is structured hierarchically from programme governance down to executable student tasks:
 
 ```mermaid
 flowchart TD
-    P["Programme (MSDSP)"] --> S["Semester (I - IV)"]
-    S --> L["Learning Cycle / Official Level (1 - 20)"]
-    L --> SP["Weekly Sprint (Normally 5 Sprints)"]
-    SP --> A["Activity (Owned by Course Head)"]
+    P["Programme (MSDSPD 2026)"] --> S["Semester (I - IV)"]
+    S --> C["Course Module (e.g. CS102)"]
+    C --> PT["Course Part (Part I: Full Stack / Part II: Cloud)"]
+    PT --> A["Activity (Owned by Course Head)"]
     A --> SA["Sub-Activity (Decomposed by Mentor)"]
-    SA --> R["Learning Resources & Micro-Criteria"]
+    SA --> R["Curated Learning Resources & MOOCs"]
+    SA --> EG["Evaluation Guidance & Rubric Breakdown"]
     SA --> E["Evidence & Proof of Work (Submitted by Student)"]
 ```
 
-- **Activity (`ACT-xx`)**: An official, course-mapped workplace brief created and governed by the **Course Head**. It defines *what* professional problem needs solving, *which* academic outcomes are targeted, and *how* work will be evaluated.
-- **Sub-Activity (`SUB-x.x`)**: An operational, ordered work item created by the **Assigned Mentor**. It decomposes the Activity into concrete, sequential steps with curated resources, dependencies, checkpoints, and specific deliverables.
+- **Activity (`<COURSE>-ACT-xx`)**: An official, course-mapped workplace brief created and governed by the **Course Head**. It defines *what* professional problem needs solving, *which* course outcomes are targeted, its indicative hours/marks weighting, and *how* work will be evaluated.
+- **Sub-Activity (`SUB-x.x`)**: An operational, ordered engineering work item created and sequenced by the **Assigned Mentor**. It decomposes the Activity into concrete, sequential deliverables with curated resources, measurable evidence, and observable grading standards.
+- **Evaluation Guidance**: A student-friendly translation layer in the portal that operationalizes formal academic standards into clear, observable criteria, submission blueprints, and common pitfalls to avoid.
 
 ---
 
 ## 2. Activity Fields (Course Head Boundary)
 
-The Activity represents an authentic workplace project slice. Its fields govern the academic validity and client-style requirements.
+The Activity represents an authentic workplace project slice. Its fields govern academic validity, syllabus alignment, and client-style deliverables.
 
-| Field Name | Type | Owner | Purpose & Description | Allowed Values / Format | Practical Example |
+### Active Portal Implementation (`lib/types.ts` & `lib/courses/cs102.ts`)
+
+| Field Name | Type | Owner | Purpose & Description | Allowed Values / Format | Practical Example (from CS102) |
 |---|---|---|---|---|---|
-| `id` / `assignmentCode` | String | Course Head | Unique identifier for the Activity across the programme. | `ACT-01`, `ACT-02`, etc. | `ACT-01` |
-| `title` | String | Course Head | Professional name of the brief or project increment. | Clear, title-case string | *"System Blueprint and API Contract Design"* |
-| `semester` | String / Enum | Course Head | Identifies the academic semester. | `Semester I`, `Semester II`, etc. | `Semester II` |
-| `level` / `learningCycle` | String / Number | Course Head | Official Level / Learning Cycle mapping. | `LC-01` to `LC-20` (Level 1 to 20) | `LC-09 · Official Level 9` |
-| `course` | String | Course Head | Associated credit-bearing academic course(s) and units. | Course code and title | *"Full Stack Integration & Testing"* |
-| `bloomLevel` | Enum | Course Head | Target cognitive tier from Bloom’s Revised Taxonomy. | `Analyze`, `Evaluate`, `Create` | `Create` |
-| `kolbStage` | Enum | Course Head | Experiential learning stage targeted by this activity. | `Concrete Experience`, `Reflective Observation`, `Abstract Conceptualisation`, `Active Experimentation` | `Concrete Experience` |
-| `outcomes` | Array&lt;String&gt; | Course Head | Mapped Programme Outcomes (PO), Programme Specific Outcomes (PSO), and Course Outcomes (CO). | Array of outcome codes | `["PO2", "PO3", "PSO1", "PSO2"]` |
-| `problemStatement` / `brief` | Markdown / Text | Course Head | Detailed professional scenario describing client requirements, context, and expected impact. | Multi-paragraph scenario | *"A product team must deliver a working application slice that connects a responsive web client..."* |
-| `constraints` | Markdown / Text | Course Head | Technical, architectural, security, or regulatory limitations. | Text / list | *"OpenAPI 3.1 specification, PostgreSQL with Drizzle, WCAG 2.1 AA accessibility."* |
-| `assignedMentor` | String / User ID | Course Head | Mentor responsible for decomposing and guiding the activity. | Mentor name / role | *"Student-Team Mentor"* or *"Dr. Jane Doe (Domain Mentor)"* |
-| `componentWeight` | String / Number | Course Head | Percentage contribution to the Level’s academic score. | Percentage or weight | `20%` |
-| `dueDate` / `submissionDate` | ISO Date / String | Course Head | Official final deadline for all deliverables. | `YYYY-MM-DD` | `2026-10-15` |
-| `checkpointDate` | ISO Date / String | Course Head | Mid-point milestone date for progress verification. | `YYYY-MM-DD` | `2026-10-01` |
-| `mandatoryDeliverables` | Text / Markdown | Course Head | Mandatory list of artifacts required to clear the evaluation gate. | Bulleted list | *"Versioned repository, openapi.yaml, ER diagram, passing CI run."* |
-| `rubricNeedsRevision` | Text | Course Head | Rubric descriptor when submitted work does not meet industry standards. | Criterion text | *"Contract has unresolved type errors or missing error schemas."* |
-| `rubricMeetsStandard` | Text | Course Head | Rubric descriptor when submitted work satisfies professional expectations. | Criterion text | *"Valid OpenAPI 3.1 contract, standard RFC 7807 problem details implemented."* |
-| `rubricExceedsStandard` | Text | Course Head | Rubric descriptor when work shows exceptional depth or engineering excellence. | Criterion text | *"Comprehensive edge-case validation, automated contract diffs, and security hardening."* |
+| `id` | String | Course Head | Unique formal identifier prefixed by the course code. | `<COURSE>-ACT-<XX>` | `"CS102-ACT-01"` |
+| `part` | `"I"` \| `"II"` | Course Head | Architectural domain or module split within the course. | `"I"`, `"II"` | `"I"` (Part I — Full Stack Architecture) |
+| `icon` | Enum | Course Head | Visual domain category icon for the activity card. | `"frontend"`, `"backend"`, `"database"`, `"integration"`, `"cloud"` | `"frontend"` |
+| `hours` | Number | Course Head | Total indicative learning hours, doubling as the mark weight. | Positive integer | `22` (22 hours / 22 marks) |
+| `title` | String | Course Head | Professional name of the brief or engineering capability. | Title-case string | `"Frontend Application Engineering"` |
+| `desc` | String | Course Head | Concise summary of the workplace problem and technical focus. | Single-line summary | `"Accessible, responsive UI on your chosen framework, wired to the API contract."` |
+| `outcome` | String | Course Head | The specific Course Outcome (CO) or exit competency achieved. | Measurable outcome statement | `"Build an accessible, responsive, framework-based frontend that consumes an API contract with correct interface states."` |
+| `subs` | Array<`SubActivity`> | Mentor / Course Head | Ordered list of decomposed sub-activities forming this activity. | Array of sub-activity objects | *7 sub-activities for ACT-01* |
 
----
+### Extended Governance Attributes (Curriculum Management)
 
-## 3. Sub-Activity Fields (Assigned Mentor Boundary)
+When managed in academic planning systems, Activities also track the following institutional attributes:
 
-Sub-activities break the parent Activity into actionable, chronological engineering steps. They are created and sequenced by the Mentor.
-
-| Field Name | Type | Owner | Purpose & Description | Allowed Values / Format | Practical Example |
-|---|---|---|---|---|---|
-| `id` | String | Mentor | Unique code identifying the sub-activity and its hierarchy. | `SUB-<ActivityNum>.<StepNum>` | `SUB-1.3` |
-| `parentActivityId` | String | System / Mentor | Foreign key linking the sub-activity to its parent `Activity`. | Valid Activity ID | `ACT-01` |
-| `title` | String | Mentor | Action-oriented title describing the concrete task. | Concise title string | *"Specify the API contract"* |
-| `category` | Enum | Mentor | Pedagogical category defining the nature of the learning interaction. | **13 Categories** (see Category Reference below) | `Assignment` or `Plan` |
-| `stepNumber` | Number | Mentor | Chronological position in the 7-step or multi-step progression. | `1` to `N` | `3` |
-| `description` | Markdown / Text | Mentor | Clear, actionable instructions telling the student what to do. | Actionable guidance | *"Define versioned endpoints, schemas, validation, pagination, status codes, and RFC 7807 responses."* |
-| `deliverable` | String | Mentor | The specific artifact, file, or tangible output expected. | Output description | *"`openapi.yaml` and request/response examples"* |
-| `cognitiveLevel` | Enum | Mentor | Cognitive depth required for this individual task. | `Analyze`, `Evaluate`, `Create` | `Create` |
-| `outcomes` | Array&lt;String&gt; | Mentor | Subset of outcomes directly practiced in this sub-activity. | Array of codes | `["PSO2", "PO2"]` |
-| `ownership` | String | Mentor | Scope of execution (individual learner vs. team role). | `Individual`, `Team`, or Role | `Team (API Lead)` |
-| `dependency` | String | Mentor | Prerequisite sub-activity or activity that must finish first. | Sub-activity ID or `None` | `SUB-1.1, SUB-1.2` |
-| `checkpoint` | String | Mentor | Milestone description or qualitative condition for sign-off. | Checkpoint title | *"Contract Review Sign-Off"* |
-| `checkpointDate` | ISO Date / String | Mentor | Date by which this sub-activity should be submitted for feedback. | `YYYY-MM-DD` | `2026-09-20` |
-| `requiresSignoff` | Boolean | Mentor | If `true`, learner cannot proceed to dependent steps without mentor approval. | `true` / `false` | `true` |
-| `status` | Enum | System / Student / Mentor | Current execution state of this sub-activity. | `Not Started`, `In progress`, `Submitted`, `Revision`, `Completed` | `In progress` |
-| `resources` | Array&lt;`LearningResource`&gt; | Mentor | Curated learning materials, references, and toolkits attached to this task. | Array of objects (see Section 4) | *List of docs, repos, videos* |
-| `evaluationCriteria` | Array&lt;`SubTaskEvaluationCriterion`&gt; | Mentor | Specific micro-rubric criteria used to evaluate this sub-activity. | Array of objects (see Section 5) | *Criteria list with 3-tier descriptors* |
-
----
-
-## 4. Nested Entity: `LearningResource`
-
-Attached directly to a Sub-Activity to support task completion without replacing authentic student work.
-
-| Field Name | Type | Purpose & Description | Example |
-|---|---|---|---|
-| `id` | String | Unique resource identifier. | `res-101` |
-| `title` | String | Human-readable title of the material. | *"OpenAPI 3.1 Specification Guide"* |
-| `type` | Enum | Media / format type: <br>• `Technical Documentation`<br>• `Code Repository / Dataset`<br>• `API Specification`<br>• `Video Demonstration`<br>• `MOOC / Online Course`<br>• `Study PDF`<br>• `Architecture Standard` | `Technical Documentation` |
-| `url` | String | Hyperlink or internal repository path to the resource. | `https://spec.openapis.org/oas/v3.1.0` |
-| `purpose` | String | Learning objective explaining *why* the student should use this resource. | *"Use to format error schemas compliant with RFC 7807."* |
-| `isMandatory` | Boolean | Flags whether reading/viewing is compulsory before submission. | `true` |
-
----
-
-## 5. Nested Entity: `SubTaskEvaluationCriterion`
-
-Provides transparent micro-rubrics for formative evaluation and revision feedback.
-
-| Field Name | Type | Purpose & Description | Example |
-|---|---|---|---|
-| `id` | String | Unique identifier for the criterion. | `crit-01` |
-| `title` | String | Short name of the evaluated dimension. | *"Schema Completeness & Validation"* |
-| `description` | String | Explanation of what is being measured. | *"Measures whether all CRUD endpoints define complete input and output schemas."* |
-| `evidenceRequired` | String | Which specific artifact or test proves this criterion. | *"`openapi.yaml` and schema validation report"* |
-| `needsRevision` | String | Performance descriptor for substandard or incomplete work. | *"Missing request bodies or undefined 4xx/5xx status codes."* |
-| `meetsStandard` | String | Performance descriptor meeting industry standards. | *"All endpoints define request/response schemas and RFC 7807 errors."* |
-| `exceedsStandard` | String | Performance descriptor showing advanced mastery. | *"Includes discriminator schemas, examples for every edge case, and contract lint tests."* |
-| `weightPercent` | Number | Contribution to the sub-activity or parent rubric. | `25` (representing 25%) |
-
----
-
-## 6. Sub-Activity Categories & The 7-Step Model
-
-The portal supports two complementary category structures:
-
-### The Core 7-Step Model (Default Student Workflow)
-1. **Lecture (Step 1 · Foundations)**: Core theoretical foundations, concept lectures, and background reading.
-2. **Quiz (Step 2 · Check)**: Formative knowledge checks testing prerequisite understanding.
-3. **Assignment (Step 3 · Practice)**: Focused hands-on exercises and component tasks.
-4. **Project (Step 4 · Milestone)**: Main implementation and milestone deliverable.
-5. **Review (Step 5 · Critique)**: Code reviews, architectural critiques, and peer evaluations.
-6. **Assessment (Step 6 · Defense)**: Final demonstration, technical defense, and panel Q&A.
-7. **Improve (Step 7 · Polish)**: Post-review defect resolution, refactoring, and polishing.
-
-### Additional Bloom/Kolb Operational Categories
-- **Understand**: Clarifying client briefs, defining requirements, logging assumptions.
-- **Plan**: Architecture diagrams, sprint backlogs, ADR preparation.
-- **Perform**: Core building, coding, testing, database querying.
-- **Record**: Maintaining commit histories, audit logs, experiment records.
-- **Demonstrate**: Recording walkthroughs, live demonstrations.
-- **Reflect**: Retrospectives and Kolb experiential learning synthesis.
-
----
-
-## 7. Student-Facing vs. Academic Terminology
-
-To avoid intimidating students with academic jargon while preserving academic rigor, the portal automatically translates technical fields using [`app/student-terminology.ts`](file:///d:/Sridas%20-%20Old%20Lap/WRKSPC_ANTIGRAVITY/msdsp-portal-v4/app/student-terminology.ts):
-
-| Academic / System Field | Student-Facing UI Label | Student Action Meaning |
+| Governance Field | Purpose & Description | Format / Example |
 |---|---|---|
-| `problemStatement` / `brief` | **What You Need to Do** | Explains the real-world client task. |
-| `mandatoryDeliverables` | **What You Need to Submit** | Exact files, links, or reports required. |
-| `evaluationCriteria` / `rubric` | **How Your Work Is Evaluated** | Clear expectations for meeting standards. |
-| `kolbStage` | **Learning Approach** | E.g. *"Do the Work"* or *"Review Your Experience"*. |
-| `bloomLevel` | **Thinking Skill** | E.g. *"Design and Build"* (`Create`) or *"Analyse the Problem"* (`Analyze`). |
-| `evidenceSubmission` | **Proof of Work** | Repository URLs, commits, test logs. |
-| `remediation` | **Improvement Plan** | Steps to fix identified defects. |
-| `revisionRequired` | **Changes Required** | Mentor feedback indicating needed improvements. |
-| `passed` / `completed` | **Approved & Completed** | Milestone successfully cleared. |
+| `courseCode` | Associated credit-bearing academic course code. | `"CS102"` |
+| `courseTitle` | Full academic course title. | `"Full Stack Architecture & Cloud-Native Development"` |
+| `semester` | Academic semester within the 2-year MSDSPD programme. | `"Semester 1"` |
+| `ltp` | Lecture–Tutorial–Practical credit distribution. | `"1–0–3"` (4 Credits) |
+| `mandatoryDeliverables` | Mandatory list of artifacts required to clear the evaluation gate. | `"Versioned repository, openapi.yaml, ER diagram, passing CI run."` |
+| `technicalConstraints` | Mandatory engineering, architectural, and security boundaries. | `"OpenAPI 3.1, PostgreSQL 16, WCAG 2.2 accessibility, RFC 9457."` |
 
 ---
 
-## 8. Summary Table of Permissions & Responsibilities
+## 3. Sub-Activity Fields (Mentor & Execution Boundary)
 
-| Action | Course Head | Assigned Mentor | Student / Team | Evaluator |
+Sub-activities break the parent Activity into actionable, chronological engineering steps. They define exactly what the student executes, submits, and proves.
+
+### Active Portal Implementation (`lib/types.ts`)
+
+| Field Name | Type | Owner | Purpose & Description | Allowed Values / Format | Practical Example |
+|---|---|---|---|---|---|
+| `id` | String | Mentor | Local hierarchical code matching `<ActivityNum>.<StepNum>`. | `"1.1"`, `"1.2"`, `"2.4"`, etc. | `"1.2"` |
+| `title` | String | Mentor | Action-oriented title describing the concrete engineering task. | Concise title string | `"Semantic HTML and accessible forms"` |
+| `hours` | Number | Mentor | Estimated learning effort in hours (also equals individual mark weight). | Positive integer | `3` (3 hours / 3 marks) |
+| `tag` | `ThinkingSkill` | Mentor | Primary cognitive skill tier practiced in this task (Bloom-aligned). | **6 Thinking Skills** (see Section 4) | `"Apply Principles"` |
+| `evidence` | String | Mentor | The exact tangible artifact or proof of work the student submits. | Concrete deliverable string | `"Semantic page, validated form and accessibility-check report."` |
+| `standard` | String | Course Head / Mentor | The operationalized **"Meets standard"** baseline grading threshold. | Objective grading threshold | `"Uses appropriate landmarks, labels, input types, validation messages and keyboard access per WCAG 2.2."` |
+| `resources` | Array<String> | Mentor | Array of resource IDs resolved against the course `RESOURCES` catalog. | Valid resource keys (`"R01"`, `"M01"`, etc.) | `["R02", "R03"]` |
+
+---
+
+## 4. Thinking-Skill Taxonomy (Jargon-Free Bloom Mapping)
+
+The portal avoids confusing educational terminology by using student-friendly, action-oriented **Thinking Skills**:
+
+| Thinking Skill | Formal Bloom Tier | What the Student Does | UI Badge Style | Practical Example |
+|---|---|---|---|---|
+| **Recall Fundamentals** | *Remember* | Recalls standard terms, HTTP methods, DNS flow, and syntax rules accurately. | Slate (`bg-slate-50 text-slate-700`) | Request lifecycle diagram and network trace (`SUB-1.1`). |
+| **Understand Core Ideas** | *Understand* | Grasps the "why" and explains how components connect in realistic scenarios. | Sky (`bg-sky-50 text-sky-700`) | Cloud shared responsibility model and IAM boundaries (`SUB-5.1`). |
+| **Apply Principles** | *Apply* | Uses established design patterns and tools to solve an isolated problem. | Indigo (`bg-indigo-50 text-indigo-700`) | Implementing modern JS modules, async workflows, and tests (`SUB-1.4`). |
+| **Analyse the Problem** | *Analyze* | Investigates root causes, profiles performance, and identifies risks. | Amber (`bg-amber-50 text-amber-700`) | Query optimization using EXPLAIN ANALYZE before/after plans (`SUB-3.7`). |
+| **Review and Justify** | *Evaluate* | Evaluates trade-offs, critiques code, defends architectural choices under review. | Violet (`bg-violet-50 text-violet-700`) | Live demonstration defending rollback and security posture (`SUB-5.6`). |
+| **Design and Build** | *Create* | Assembles, codes, and ships an end-to-end working production component. | Emerald (`bg-emerald-50 text-emerald-700`) | Building a layered REST API conforming to OpenAPI 3.1 (`SUB-2.2`). |
+
+---
+
+## 5. Student-Friendly Evaluation Guidance Layer
+
+To make grading transparent and understandable to students while preserving academic rigor, the portal includes an automated **Evaluation Guidance** system implemented in [`lib/evaluationGuidance.ts`](../lib/evaluationGuidance.ts) and rendered in [`components/SubActivityDetail.tsx`](../components/SubActivityDetail.tsx):
+
+```mermaid
+flowchart LR
+    STD["Official Syllabus Standard (Academic Threshold)"] --> TRL["In Plain Terms (Student Translation)"]
+    TRL --> CRIT["What Reviewer Verifies (3-4 Observable Criteria)"]
+    CRIT --> BP["Submission Blueprint (Concrete Artifact Guidance)"]
+    BP --> PIT["Common Pitfalls to Avoid (Reviewer's Advisory)"]
+    PIT --> CHK["Pre-Submission Checklist (Permissions, Labels, Secrets)"]
+```
+
+### Guidance Structure per Sub-Activity
+
+| Guidance Component | Key Field in Code | Purpose & Function |
+|---|---|---|
+| **In Plain Terms** | `studentExplanation` | Translates the formal academic standard into a plain-English, empowering explanation of what capability must be proven. |
+| **Official Standard** | `sub.standard` | Displays the uncompromised curriculum benchmark as the baseline passing threshold. |
+| **Observable Criteria** | `evaluatorCriteria: string[]` | An itemized list of 3–4 concrete technical items that the reviewer checks during grading (e.g. keyboard navigability, parameterization, non-root user). |
+| **Submission Blueprint** | `concreteEvidence` | Actionable instructions on what files, repositories, recordings, or reports to include. |
+| **Accepted Formats** | Format Tags | Visual pills indicating whether Git repos, screen recordings, network traces, OpenAPI specs, or test logs are accepted. |
+| **Common Pitfalls** | `pitfallToAvoid` | An advisory callout warning against frequent mistakes that cause students to lose marks (e.g. hardcoding secrets, missing negative-path tests, unhandled timeouts). |
+| **Pre-Submission Checklist** | Static Checklist | 4 verification checks: Permissions granted, Traceable labels, Criteria completeness, Secrets cleansed. |
+| **Rubric Pillars** | 3 Pillars Strip | **Relevance** (directly targets brief), **Completeness** (all parts present), **Verifiability** (backed by working outputs). |
+
+---
+
+## 6. Learning Resource Structure (`Resource`)
+
+Resources are curated by the Mentor and Course Head to guide students without replacing hands-on problem-solving:
+
+| Field Name | Type | Purpose & Description | Example |
+|---|---|---|---|
+| `key` / `id` | String | Unique catalog key referenced in `sub.resources`. | `"R08"`, `"M01"` |
+| `label` | String | Human-readable title of the material or standard. | `"OpenAPI Specification"`, `"MDN — HTTP"` |
+| `url` | String \| null | Direct public URL (or `null` if institutional/internal). | `"https://spec.openapis.org/oas/latest.html"` |
+
+### Resource Keying Conventions:
+- **`Mxx` (e.g. `M01`, `M02`)**: Recommended MOOCs (Full Stack Open, Harvard CS50, Linux Foundation).
+- **`Rxx` (e.g. `R01`, `R11`)**: Authoritative specifications, official documentation, RFCs, and OWASP cheat sheets.
+
+---
+
+## 7. Technical Standards Alignment
+
+The MSDSPD 2026 curriculum enforces industry-grade standards:
+
+| Domain | Standard Reference | Application in Curriculum |
+|---|---|---|
+| **API Errors** | **RFC 9457** | Problem Details for HTTP APIs (replacing legacy RFC 7807). |
+| **Accessibility** | **WCAG 2.2 AA** | Focus appearance, target sizing, contrast ratios, and keyboard operability. |
+| **Authentication** | **OAuth 2.0 BCP (RFC 9700)** | Best Current Practice for OAuth 2.0 security, JWT cryptographic validation. |
+| **Application Security** | **OWASP ASVS & Top 10** | Level 1/2 Application Security Verification Standard and API Security Top 10. |
+| **API Design** | **OpenAPI 3.1** | Contract-first API specifications with JSON Schema parity. |
+| **Containers** | **CIS Docker Benchmark** | Non-root users, minimal base images (distroless/Alpine), no secrets in layers. |
+
+---
+
+## 8. Summary of Stakeholder Responsibilities
+
+| Lifecycle Action | Course Head | Assigned Mentor | Student / Team | Evaluator |
 |---|:---:|:---:|:---:|:---:|
-| **Create Activity** & set brief | **Accountable / Responsible** | Consulted | Informed | Consulted |
-| **Map Outcomes & Academic Weights** | **Accountable / Responsible** | Consulted | Informed | Consulted |
-| **Set Official Deadlines** | **Accountable / Responsible** | Consulted | Informed | Consulted |
+| **Define Course Structure & Parts** | **Accountable / Responsible** | Consulted | Informed | Consulted |
+| **Set Activity Brief & Outcomes** | **Accountable / Responsible** | Consulted | Informed | Consulted |
+| **Allocate Hours / Mark Weights** | **Accountable / Responsible** | Consulted | Informed | Consulted |
 | **Decompose into Sub-Activities** | Consulted | **Accountable / Responsible** | Informed | Consulted |
-| **Attach Learning Resources** | Consulted | **Accountable / Responsible** | Informed | Consulted |
-| **Set Checkpoints & Sign-Offs** | Consulted | **Accountable / Responsible** | Informed | Consulted |
-| **Perform Work & Submit Evidence** | Informed | Consulted | **Accountable / Responsible** | Informed |
+| **Curate Resources & MOOCs** | Consulted | **Accountable / Responsible** | Informed | Consulted |
+| **Define Evaluation Standards** | **Accountable** | **Responsible** | Informed | Consulted |
+| **Execute Tasks & Submit Proof** | Informed | Consulted | **Accountable / Responsible** | Informed |
 | **Review Evidence & Give Feedback** | Informed | **Accountable / Responsible** | Consulted | Consulted |
-| **Recommend Final Grade/Result** | Informed | **Responsible** | Informed | **Accountable** |
-| **Publish Academic Progression** | **Accountable / Responsible** | Consulted | Informed | Informed |
+| **Assess Against Standards** | Consulted | **Responsible** | Informed | **Accountable** |
+| **Record & Publish Progression** | **Accountable / Responsible** | Consulted | Informed | Informed |
