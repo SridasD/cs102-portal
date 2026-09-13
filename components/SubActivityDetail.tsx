@@ -23,8 +23,8 @@ import {
   Presentation,
 } from "lucide-react";
 import { useState } from "react";
-import { RESOURCES, TAG_STYLES } from "@/lib/curriculum";
-import type { SubActivity } from "@/lib/types";
+import { RESOURCES as DEFAULT_RESOURCES, TAG_STYLES } from "@/lib/curriculum";
+import type { Resource, SubActivity } from "@/lib/types";
 import { Badge } from "./Badge";
 
 const BRIEF_ACTIONS: Record<SubActivity["tag"], string> = {
@@ -75,8 +75,16 @@ function evidenceExample(sub: SubActivity) {
   return `For example: submit ${sub.evidence.replace(/\.$/, "").toLocaleLowerCase()}, label the important parts, and briefly explain how each item proves the standard.`;
 }
 
-function ResourceCard({ id, index }: { id: string; index: number }) {
-  const resource = RESOURCES[id];
+function ResourceCard({
+  id,
+  index,
+  resources,
+}: {
+  id: string;
+  index: number;
+  resources?: Record<string, Resource>;
+}) {
+  const resource = (resources ?? DEFAULT_RESOURCES)[id];
   if (!resource) return null;
   const isMooc = id.startsWith("M");
 
@@ -115,7 +123,13 @@ function ResourceCard({ id, index }: { id: string; index: number }) {
   );
 }
 
-export function SubActivityDetail({ sub }: { sub: SubActivity }) {
+export function SubActivityDetail({
+  sub,
+  resources,
+}: {
+  sub: SubActivity;
+  resources?: Record<string, Resource>;
+}) {
   const [open, setOpen] = useState(false);
   const tagClass = TAG_STYLES[sub.tag] ?? "bg-slate-50 text-slate-700 ring-slate-200";
   const panelId = `subactivity-${sub.id.replaceAll(".", "-")}-panel`;
@@ -219,7 +233,9 @@ export function SubActivityDetail({ sub }: { sub: SubActivity }) {
             <p className="hidden text-xs text-slate-400 sm:block">Use these to prepare your evidence</p>
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {resourceIds.map((id, index) => <ResourceCard key={id} id={id} index={index} />)}
+            {resourceIds.map((id, index) => (
+              <ResourceCard key={id} id={id} index={index} resources={resources} />
+            ))}
           </div>
         </section>
 

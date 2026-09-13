@@ -55,3 +55,32 @@ export interface Course {
   credits: number;
   totalHours: number;
 }
+
+export interface CoursePart {
+  id: "I" | "II";
+  label: string;
+  statLabel?: string;
+  color: "indigo" | "sky" | "emerald" | "violet";
+}
+
+export interface CourseData {
+  slug: string;
+  course: Course;
+  shortDesc?: string;
+  status?: "active" | "upcoming" | "draft";
+  parts?: CoursePart[];
+  activities: Activity[];
+  resources: Record<string, Resource>;
+}
+
+export interface ProgramInfo {
+  code: string;
+  name: string;
+  degree: string;
+  academicYear: string;
+  university: string;
+  department: string;
+  tagline: string;
+  description: string;
+}
+

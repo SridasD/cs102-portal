@@ -1,17 +1,24 @@
-# CS102 Curriculum Portal
+# MSDSPD 2026 Curriculum Portal
 
-A single-course curriculum viewer for **CS102 — Full Stack Architecture & Cloud-Native Development** (Semester 1). Built with Next.js (App Router), React, TypeScript, Tailwind CSS and Lucide icons.
+An activity-based curriculum portal for the **M.Sc. Data Science & Product Development (MSDSPD 2026 Batch)** at the **School of Digital Sciences, Kerala University of Digital Sciences, Innovation and Technology (DUK)**.
+
+Built with Next.js (App Router), React, TypeScript, Tailwind CSS, and Lucide icons.
 
 ## Features
 
-- Course header with quick-stat strip (hours, credits, activities, sub-activities, Part I/II split).
-- Five main **Activities** as accordion cards; expand one, several, or all.
-- Each expanded activity reveals its **Sub-Activities** with: code + title, Thinking-Skill tag, hours/marks, required evidence, evaluation standard (Meets threshold), and clickable learning resources.
-- Client-side **search** (title, evidence, standard) and **Thinking-Skill tag filters**.
-- **Stack Declaration** prerequisite gate and a **Part I (Full Stack) / Part II (Cloud)** split with distinct accent colours.
-- Accessible: semantic landmarks, `aria-expanded` / `aria-controls`, keyboard operable, visible focus, and reduced-motion support.
+- **Multi-Course Routing Architecture**:
+  - `/`: **MSDSPD 2026 Program Hub** — Course directory, program stats, semester cards, and quick navigation.
+  - `/courses/[code]`: **Interactive Course Portal** (e.g. `/courses/cs102`) with the full accordion activity viewer, search, filters, and dynamic course switcher.
+  - `/cs102`: Direct short URL rewrite to `/courses/cs102`.
+- **Dynamic Course Registry**: Courses are modularized under `lib/courses/` with customizable parts, activities, evidence thresholds, and learning resources.
+- **Course Header & Metrics**: Quick-stat strip dynamically computed from course data (hours, credits, activities, sub-activities, part breakdowns).
+- **Activity & Sub-Activity Accordion**:
+  - Expand one, several, or all activities.
+  - Sub-activities display code + title, Thinking-Skill tag, hours/marks, required evidence, assessment standard (Meets threshold), and clickable learning resources.
+- **Client-Side Search & Tag Filtering**: Instant search across title, evidence, and standards, along with Thinking-Skill filters.
+- **Accessible & Responsive**: Semantic landmarks, keyboard navigation, visible focus indicators, and reduced-motion support.
 
-## Getting started
+## Getting Started
 
 ```bash
 npm install
@@ -21,30 +28,45 @@ npm run build    # production build
 
 Requires Node.js 18.17+.
 
-## Structure
+## Project Structure
 
 ```
 app/
-  layout.tsx          Root layout, loads Inter via next/font
-  page.tsx            Composes CourseHeader + ActivityList
-  globals.css         Tailwind directives + reduced-motion
+  layout.tsx              Root layout, loads Inter via next/font
+  page.tsx                Program Hub landing page (MSDSPD 2026)
+  courses/[code]/page.tsx Dynamic route for individual courses
+  globals.css             Tailwind directives + reduced-motion
 components/
-  Badge.tsx           Badge, HoursBadge primitives
-  CourseHeader.tsx    Course identity + quick stats (server component)
-  ActivityList.tsx    Filters, expand state, Part I/II sections, gate ("use client")
-  ActivityCard.tsx    Accordion card + panel ("use client")
-  SubActivityDetail.tsx  One sub-activity's evidence/standard/resources
+  ProgramHub.tsx          Program dashboard & course directory
+  CourseHeader.tsx        Course identity, breadcrumb, and quick stats
+  ActivityList.tsx        Filters, expand state, part sections ("use client")
+  ActivityCard.tsx        Accordion card + panel ("use client")
+  SubActivityDetail.tsx   Sub-activity evidence/standard/resources ("use client")
+  Badge.tsx               Badge primitives
 lib/
-  types.ts            Domain types
-  curriculum.ts       CS102 v2 data, resources, tag styles, derived helpers
+  courses/
+    index.ts              Central course registry & program metadata
+    cs102.ts              CS102 full curriculum data & resources
+  types.ts                Domain types (Course, CourseData, CoursePart, etc.)
+  curriculum.ts           Backwards-compatible facade
 ```
 
-## Editing the curriculum
+## Adding a New Course
 
-All content lives in `lib/curriculum.ts`. To add a sub-activity, push an object onto the relevant activity's `subs` array; `hours` doubles as its mark weight, and `resources` holds ids that resolve against `RESOURCES`. Adding a new activity for a future semester means one new entry in `ACTIVITIES` — the header stats, Part I/II sections and counts all derive automatically.
+1. Create a course file in `lib/courses/<course_code>.ts` (e.g. `lib/courses/cs103.ts`) implementing `CourseData`.
+2. Register the course in `lib/courses/index.ts`:
+   ```ts
+   import { CS103_DATA } from "./cs103";
 
-## Notes
+   export const COURSES: Record<string, CourseData> = {
+     cs102: CS102_DATA,
+     cs103: CS103_DATA,
+   };
+   ```
+3. The Program Hub, route `/courses/cs103`, header stats, and course switcher will automatically pick up the new course without any additional configuration.
 
-- The accordion animates height using the CSS `grid-template-rows: 0fr → 1fr` technique, so panels grow to their natural height without a hard-coded `max-height`.
-- Marks equal indicative hours (course total 120); hours are learning-effort estimates, not attendance.
-- Data reflects the CS102 v2 plan (operationalized 3-tier rubric, mark allocation, formal IDs, OWASP-based application-security depth, student-chosen stack, WCAG 2.2).
+## Evaluation Philosophy
+
+- Marks equal indicative hours; hours are learning-effort estimates, not attendance.
+- Operationalized 3-tier rubric ("Meets standard" threshold).
+- Industry-aligned requirements: OWASP application security depth, clean architecture, verifiable repository and deployment proof.

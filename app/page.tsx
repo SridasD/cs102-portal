@@ -1,18 +1,12 @@
-import { ActivityList } from "@/components/ActivityList";
-import { CourseHeader } from "@/components/CourseHeader";
+import type { Metadata } from "next";
+import { ProgramHub } from "@/components/ProgramHub";
+
+export const metadata: Metadata = {
+  title: "MSDSPD 2026 Curriculum Portal | Digital University Kerala",
+  description:
+    "Curriculum portal for M.Sc. Data Science and Product Development (MSDSPD 2026 Batch), School of Digital Sciences, Kerala University of Digital Sciences, Innovation and Technology.",
+};
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <CourseHeader />
-      <main>
-        <ActivityList />
-      </main>
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-6xl px-5 py-6 text-xs text-slate-400 sm:px-8">
-          Hours are learning-effort estimates, not attendance requirements.
-        </div>
-      </footer>
-    </div>
-  );
+  return <ProgramHub />;
 }

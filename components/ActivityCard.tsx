@@ -11,7 +11,7 @@ import {
   Server,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import type { Activity, ActivityIcon, SubActivity } from "@/lib/types";
+import type { Activity, ActivityIcon, Resource, SubActivity } from "@/lib/types";
 import { Badge } from "./Badge";
 import { SubActivityDetail } from "./SubActivityDetail";
 
@@ -29,12 +29,14 @@ export function ActivityCard({
   open,
   onToggle,
   visibleSubs,
+  resources,
 }: {
   activity: Activity;
   index: number;
   open: boolean;
   onToggle: () => void;
   visibleSubs: SubActivity[];
+  resources?: Record<string, Resource>;
 }) {
   const Icon = ACT_ICONS[activity.icon] ?? Layers;
   const isCloud = activity.part === "II";
@@ -113,7 +115,7 @@ export function ActivityCard({
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               {visibleSubs.map((sub) => (
-                <SubActivityDetail key={sub.id} sub={sub} />
+                <SubActivityDetail key={sub.id} sub={sub} resources={resources} />
               ))}
             </div>
           </div>

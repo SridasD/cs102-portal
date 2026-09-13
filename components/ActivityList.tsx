@@ -6,14 +6,12 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
-  ACTIVITIES,
-  ACTIVITY_INDEX,
+  ACTIVITIES as DEFAULT_ACTIVITIES,
   ALL_TAGS,
-  PART_I_HOURS,
-  PART_II_HOURS,
+  RESOURCES as DEFAULT_RESOURCES,
   TAG_STYLES,
 } from "@/lib/curriculum";
-import type { SubActivity, ThinkingSkill } from "@/lib/types";
+import type { CourseData, SubActivity, ThinkingSkill } from "@/lib/types";
 import { ActivityCard } from "./ActivityCard";
 import { Badge } from "./Badge";
 
@@ -30,14 +28,25 @@ function PartHeader({
   label,
   hours,
 }: {
-  color: "indigo" | "sky";
+  color: "indigo" | "sky" | "emerald" | "violet" | string;
   label: string;
   hours: number;
 }) {
-  const dot = color === "sky" ? "bg-sky-500" : "bg-indigo-500";
+  const dot =
+    color === "sky"
+      ? "bg-sky-500"
+      : color === "emerald"
+      ? "bg-emerald-500"
+      : color === "violet"
+      ? "bg-violet-500"
+      : "bg-indigo-500";
   const chip =
     color === "sky"
       ? "bg-sky-50 text-sky-700 ring-sky-200"
+      : color === "emerald"
+      ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+      : color === "violet"
+      ? "bg-violet-50 text-violet-700 ring-violet-200"
       : "bg-indigo-50 text-indigo-700 ring-indigo-200";
   return (
     <div className="flex items-center gap-3">
@@ -51,9 +60,21 @@ function PartHeader({
   );
 }
 
-export function ActivityList() {
+export function ActivityList({ courseData }: { courseData?: CourseData }) {
+  const activities = courseData?.activities ?? DEFAULT_ACTIVITIES;
+  const parts = courseData?.parts ?? [
+    { id: "I", label: "Part I — Full Stack Architecture", color: "indigo" as const },
+    { id: "II", label: "Part II — Cloud-Native Development", color: "sky" as const },
+  ];
+  const resources = courseData?.resources ?? DEFAULT_RESOURCES;
+
+  const activityIndex = useMemo(
+    () => Object.fromEntries(activities.map((a, i) => [a.id, i])),
+    [activities],
+  );
+
   const [manualOpen, setManualOpen] = useState<Set<string>>(
-    () => new Set([ACTIVITIES[0].id]),
+    () => new Set(activities[0] ? [activities[0].id] : []),
   );
   const [query, setQuery] = useState("");
   const [tags, setTags] = useState<ThinkingSkill[]>([]);
@@ -62,7 +83,7 @@ export function ActivityList() {
   const filtering = q.length > 0 || tags.length > 0;
 
   const computed = useMemo(() => {
-    return ACTIVITIES.map((a) => {
+    return activities.map((a) => {
       const titleHit = q.length > 0 && `${a.id} ${a.title} ${a.desc}`.toLowerCase().includes(q);
       const visibleSubs = a.subs.filter(
         (s) =>
@@ -71,7 +92,7 @@ export function ActivityList() {
       );
       return { activity: a, visibleSubs, hasMatch: visibleSubs.length > 0 };
     });
-  }, [q, tags]);
+  }, [activities, q, tags]);
 
   const visible = filtering ? computed.filter((c) => c.hasMatch) : computed;
   const totalHits = computed.reduce((n, c) => n + c.visibleSubs.length, 0);
@@ -84,15 +105,12 @@ export function ActivityList() {
       return next;
     });
 
-  const expandAll = () => setManualOpen(new Set(ACTIVITIES.map((a) => a.id)));
+  const expandAll = () => setManualOpen(new Set(activities.map((a) => a.id)));
   const collapseAll = () => setManualOpen(new Set());
   const isOpen = (id: string) => (filtering ? true : manualOpen.has(id));
 
   const toggleTag = (t: ThinkingSkill) =>
     setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
-
-  const partI = visible.filter((c) => c.activity.part === "I");
-  const partII = visible.filter((c) => c.activity.part === "II");
 
   return (
     <section className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
@@ -126,7 +144,7 @@ export function ActivityList() {
 
           <div className="flex items-center gap-2 text-sm">
             <span className="tabular-nums text-slate-400">
-              {filtering ? `${totalHits} matches` : `${ACTIVITIES.length} activities`}
+              {filtering ? `${totalHits} matches` : `${activities.length} activities`}
             </span>
             <span className="text-slate-300">·</span>
             <button
@@ -166,41 +184,58 @@ export function ActivityList() {
         </div>
       </div>
 
-      {partI.length > 0 && (
-        <div>
-          <PartHeader color="indigo" label="Part I — Full Stack Architecture" hours={PART_I_HOURS} />
-          <div className="mt-4 space-y-3">
-            {partI.map((c) => (
-              <ActivityCard
-                key={c.activity.id}
-                activity={c.activity}
-                index={ACTIVITY_INDEX[c.activity.id]}
-                open={isOpen(c.activity.id)}
-                onToggle={() => toggle(c.activity.id)}
-                visibleSubs={c.visibleSubs}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Render Parts */}
+      {parts.map((p, idx) => {
+        const partMatches = visible.filter((c) => c.activity.part === p.id);
+        const partTotalHours = activities
+          .filter((a) => a.part === p.id)
+          .reduce((n, a) => n + a.hours, 0);
 
-      {partII.length > 0 && (
-        <div className="mt-10">
-          <PartHeader color="sky" label="Part II — Cloud-Native Development" hours={PART_II_HOURS} />
-          <div className="mt-4 space-y-3">
-            {partII.map((c) => (
-              <ActivityCard
-                key={c.activity.id}
-                activity={c.activity}
-                index={ACTIVITY_INDEX[c.activity.id]}
-                open={isOpen(c.activity.id)}
-                onToggle={() => toggle(c.activity.id)}
-                visibleSubs={c.visibleSubs}
-              />
-            ))}
+        if (partMatches.length === 0) return null;
+
+        return (
+          <div key={p.id} className={idx > 0 ? "mt-10" : ""}>
+            <PartHeader color={p.color} label={p.label} hours={partTotalHours} />
+            <div className="mt-4 space-y-3">
+              {partMatches.map((c) => (
+                <ActivityCard
+                  key={c.activity.id}
+                  activity={c.activity}
+                  index={activityIndex[c.activity.id] ?? 0}
+                  open={isOpen(c.activity.id)}
+                  onToggle={() => toggle(c.activity.id)}
+                  visibleSubs={c.visibleSubs}
+                  resources={resources}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })}
+
+      {/* Render orphan activities if any don't match configured parts */}
+      {(() => {
+        const knownPartIds = new Set(parts.map((p) => p.id));
+        const orphanMatches = visible.filter((c) => !knownPartIds.has(c.activity.part));
+        if (orphanMatches.length === 0) return null;
+        return (
+          <div className="mt-10">
+            <div className="mt-4 space-y-3">
+              {orphanMatches.map((c) => (
+                <ActivityCard
+                  key={c.activity.id}
+                  activity={c.activity}
+                  index={activityIndex[c.activity.id] ?? 0}
+                  open={isOpen(c.activity.id)}
+                  onToggle={() => toggle(c.activity.id)}
+                  visibleSubs={c.visibleSubs}
+                  resources={resources}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {visible.length === 0 && (
         <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
