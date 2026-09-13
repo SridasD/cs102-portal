@@ -178,6 +178,7 @@ function PreviewCourseCard({
 
 export function ProgramHub() {
   const cs102 = COURSES.cs102;
+  const cs501 = COURSES.cs501;
   const cs601 = COURSES.cs601;
 
   return (
@@ -241,8 +242,8 @@ export function ProgramHub() {
                 <Layers className="h-4 w-4 text-sky-600" />
                 <span>Interactive Portals</span>
               </div>
-              <div className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">2 Courses</div>
-              <div className="mt-0.5 text-xs text-slate-400">CS102 &amp; CS601 Active</div>
+              <div className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">3 Courses</div>
+              <div className="mt-0.5 text-xs text-slate-400">CS102, CS501, CS601 Active</div>
             </div>
 
             <div className="rounded-xl border border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur">
@@ -296,18 +297,11 @@ export function ProgramHub() {
           </div>
 
           <div className="mt-6 space-y-5">
+            {/* CS501 Active */}
+            {cs501 && <ActiveCourseCard courseData={cs501} />}
+
             {/* CS601 Active */}
             {cs601 && <ActiveCourseCard courseData={cs601} />}
-
-            {/* CS501 Preview */}
-            <PreviewCourseCard
-              code="CS501"
-              title="AI Ethics & Governance"
-              category="elective"
-              credits={3}
-              ltp="3–0–0"
-              description="Bias mitigation, algorithmic fairness, regulatory compliance (EU AI Act), model explainability, and responsible AI governance frameworks."
-            />
 
             {/* CS1101 Preview */}
             <PreviewCourseCard

@@ -14,7 +14,10 @@ export type ActivityIcon =
   | "cloud"
   | "design"
   | "performance"
-  | "workflow";
+  | "workflow"
+  | "ethics"
+  | "security"
+  | "audit";
 
 export interface Resource {
   label: string;

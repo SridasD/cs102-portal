@@ -936,6 +936,382 @@ const GUIDANCE_MAP: Record<string, EvaluationGuidance> = {
     pitfallToAvoid:
       "Overusing <link rel='preload'> for low-priority assets, which starves critical CSS and JavaScript bandwidth during early page load.",
   },
+
+  /* =========================================================================
+   * CS501: AI Ethics & Governance
+   * ========================================================================= */
+
+  // Activity 1: Build a Fairness Auditor (Quantifying Bias)
+  "CS501-SUB-1.1": {
+    studentExplanation:
+      "The evaluator wants to see that you understand the mathematical foundations of algorithmic fairness and why a model with 95% overall accuracy can still be dangerously biased against protected sub-populations.",
+    evaluatorCriteria: [
+      "Explains statutory protected classes (race, gender, age, disability) and how historical prejudice or proxy variables embed into datasets.",
+      "Clearly distinguishes individual fairness, demographic parity (statistical parity), and equalized odds.",
+      "Mathematically proves why high global accuracy can conceal severe error-rate disparities across minority groups.",
+    ],
+    concreteEvidence:
+      "Submit structured notes defining protected attributes, proxy features, and an accuracy-paradox mathematical example.",
+    pitfallToAvoid:
+      "Assuming that simply removing a sensitive column (like gender) prevents bias, ignoring correlated proxy features like zip code or hobbies.",
+  },
+  "CS501-SUB-1.2": {
+    studentExplanation:
+      "Calculate selection rates and positive prediction outcomes across distinct demographic groups using Fairlearn or AIF360, avoiding unsubstantiated generalizations.",
+    evaluatorCriteria: [
+      "Correctly computes demographic parity ratio and selection rate differences across protected groups.",
+      "Evaluates four-fifths (80%) rule for adverse impact in decision pipelines.",
+      "Tabulates results with confidence intervals and sample size disclosures per cohort.",
+    ],
+    concreteEvidence:
+      "Provide a comparative group selection table, Fairlearn demographic parity metrics output, and sample-size distribution plots.",
+    pitfallToAvoid:
+      "Drawing broad conclusions from small subgroup sample sizes without calculating statistical significance or margin of error.",
+  },
+  "CS501-SUB-1.3": {
+    studentExplanation:
+      "Analyze false-positive rates (FPR) and false-negative rates (FNR) across sensitive demographic splits. You must investigate who bears the real-world harm of erroneous model decisions.",
+    evaluatorCriteria: [
+      "Calculates group-level confusion matrices highlighting false-positive and false-negative disparity.",
+      "Quantifies Equalized Odds and Equal Opportunity differences across cohorts.",
+      "Analyzes real-world stakeholder impact (e.g. denied loans vs wrongful fraud flags) resulting from asymmetrical error distribution.",
+    ],
+    concreteEvidence:
+      "Submit a comparative error disparity matrix with annotated confusion matrices and a harm-impact analysis report.",
+    pitfallToAvoid:
+      "Focusing solely on false positives while overlooking disparate false negatives that systematically deny benefits to specific groups.",
+  },
+  "CS501-SUB-1.4": {
+    studentExplanation:
+      "Build a repeatable, automated Fairness Auditor application or Python notebook that ingests model predictions and datasets, executes automated fairness evaluations, and produces standardized bias diagnostics.",
+    evaluatorCriteria: [
+      "Programmatic pipeline ingests test data and generates repeatable fairness metric calculations.",
+      "Generates automated visualizations comparing selection rates, equalized odds, and performance metrics across groups.",
+      "Automated unit tests assert validity of metric calculations against verified benchmark datasets.",
+    ],
+    concreteEvidence:
+      "Submit the complete versioned Python notebook or application repository, dataset documentation, automated fairness reports, and test files.",
+    pitfallToAvoid:
+      "Hardcoding dataset paths or column names, making the auditor non-reusable across different models or datasets.",
+  },
+  "CS501-SUB-1.5": {
+    studentExplanation:
+      "Implement and benchmark at least one algorithmic mitigation technique (pre-processing such as reweighing, in-processing such as grid search reduction, or post-processing such as threshold optimization) and measure the fairness vs accuracy trade-off.",
+    evaluatorCriteria: [
+      "Applies an established bias-mitigation algorithm (e.g. Fairlearn ExponentiatedGradient, ThresholdOptimizer, or reweighing).",
+      "Constructs Pareto frontier or before-and-after table comparing fairness metrics against model accuracy or F1-score.",
+      "Records operational trade-offs including retraining latency, threshold drift, and inference complexity.",
+    ],
+    concreteEvidence:
+      "Provide before-and-after model evaluation logs, metric comparison tables, and trade-off frontier charts.",
+    pitfallToAvoid:
+      "Claiming a model is 'completely unbiased' after mitigation rather than characterizing the quantified reduction in disparity.",
+  },
+  "CS501-SUB-1.6": {
+    studentExplanation:
+      "Defend your fairness audit findings in front of reviewers. You will justify why you chose specific fairness metrics over competing definitions and explain the real-world trade-offs of your mitigation approach.",
+    evaluatorCriteria: [
+      "Student articulates and defends the choice of fairness definition (e.g. why Equalized Odds was chosen over Demographic Parity for a high-stakes task).",
+      "Explains Kleinberg’s impossibility theorem showing why all fairness criteria cannot be satisfied simultaneously.",
+      "Responds thoroughly to questions concerning minority representation, proxy variables, and residual bias.",
+    ],
+    concreteEvidence:
+      "Submit presentation slides, meeting minutes, and recorded technical defense notes addressing auditor inquiries.",
+    pitfallToAvoid:
+      "Claiming to optimize both demographic parity and predictive parity when the base rates between groups differ significantly.",
+  },
+  "CS501-SUB-1.7": {
+    studentExplanation:
+      "Refine your audit report based on feedback, close outstanding methodology issues, and compile a finalized audit document with an explicit statement of limitations.",
+    evaluatorCriteria: [
+      "Addresses all defense feedback with traceable changes in documentation or code.",
+      "Provides an explicit Limitations & Assumptions Statement outlining unmeasured groups, data collection gaps, and generalization boundaries.",
+      "Produces an executive summary readable by non-technical governance boards and compliance officers.",
+    ],
+    concreteEvidence:
+      "Submit the final audit package, updated reproducible notebook, audit checklist, and signed limitations statement.",
+    pitfallToAvoid:
+      "Omitting known limitations or failing to specify the population context within which the model was validated.",
+  },
+
+  // Activity 2: Build a Model Interpreter (Explainable AI)
+  "CS501-SUB-2.1": {
+    studentExplanation:
+      "The evaluator assesses your understanding of explainability (XAI). You must clearly distinguish global model interpretability (how the system behaves across all data) from local prediction attribution (why the system gave this specific score to this applicant).",
+    evaluatorCriteria: [
+      "Accurately defines global interpretability vs local post-hoc explanations (e.g. tree feature importance vs SHAP values).",
+      "Explains the trade-off between intrinsically interpretable models (linear regression, decision trees) and black-box models (deep neural nets, ensembles).",
+      "Outlines legal and compliance imperatives for explainability (e.g. GDPR 'Right to Explanation', adverse action notices in credit lending).",
+    ],
+    concreteEvidence:
+      "Submit comparative conceptual notes accompanied by a taxonomy table contrasting intrinsic interpretability vs post-hoc attribution methods.",
+    pitfallToAvoid:
+      "Assuming that a high model accuracy score eliminates the need for explainability in high-consequence decision contexts.",
+  },
+  "CS501-SUB-2.2": {
+    studentExplanation:
+      "Extract and analyze global feature importance for your model, demonstrating that you understand the mathematical basis of attribution and know not to mistake correlation for causation.",
+    evaluatorCriteria: [
+      "Calculates permutation feature importance or global SHAP summary values for the trained model.",
+      "Identifies unexpected or suspicious feature reliance (e.g. data leakage columns or irrelevant identifiers).",
+      "Explicitly documents that feature importance demonstrates statistical dependence rather than causal impact.",
+    ],
+    concreteEvidence:
+      "Provide global feature importance plots, numerical attribution rankings, and an analytical commentary on top features.",
+    pitfallToAvoid:
+      "Presenting feature importance rankings as proof that changing feature X will causally produce outcome Y in the real world.",
+  },
+  "CS501-SUB-2.3": {
+    studentExplanation:
+      "Generate local attributions for two individual predictions—one high-confidence true positive and one misclassified edge case—using SHAP or LIME, explaining why the model reached each conclusion.",
+    evaluatorCriteria: [
+      "Generates local feature attribution (SHAP waterfall or LIME bar chart) for a correct and an incorrect model inference.",
+      "Identifies which input values pushed the prediction toward or away from the decision threshold.",
+      "Diagnoses why the error case failed and flags if the explanation revealed ungrounded feature reliance.",
+    ],
+    concreteEvidence:
+      "Submit side-by-side local explanation plots, input feature vectors, and step-by-step reasoning breakdown for both cases.",
+    pitfallToAvoid:
+      "Generating visual plots without explaining what the baseline reference value represents or how positive/negative attributions sum to the score.",
+  },
+  "CS501-SUB-2.4": {
+    studentExplanation:
+      "Build a reliable, production-ready model explanation interface that allows engineers, auditors, or users to inspect decision attributions interactively with full version traceability.",
+    evaluatorCriteria: [
+      "Software interface or notebook service computes deterministic, reproducible explanations for arbitrary test instances.",
+      "Clearly logs and displays model name, version hash, input payload, and baseline attribution reference.",
+      "Handles input validation and graceful error states when presented with malformed or out-of-distribution inputs.",
+    ],
+    concreteEvidence:
+      "Submit the versioned code repository, test cases, and a live demonstration recording or screencast of the interpreter in action.",
+    pitfallToAvoid:
+      "Failing to fix random seeds or background sample references in SHAP/LIME, causing explanations to fluctuate wildly between runs.",
+  },
+  "CS501-SUB-2.5": {
+    studentExplanation:
+      "Format and test model explanations tailored to your target model type (tabular waterfall, image saliency/attention map, or text token highlight), ensuring the visual display is accessible and transparent about uncertainty.",
+    evaluatorCriteria: [
+      "Selects appropriate explanation modality: SHAP force/waterfall for tabular, Captum integrated gradients for vision, token heatmaps for NLP.",
+      "Visual design adheres to accessibility standards (colorblind-safe palettes, legible contrast, no reliance on color alone).",
+      "Includes uncertainty or confidence intervals rather than presenting point attributions with false certainty.",
+    ],
+    concreteEvidence:
+      "Submit accessible explanation charts, token/attention overlays, and an accessibility validation check.",
+    pitfallToAvoid:
+      "Using red/green color coding for positive/negative attributions without alternative shape, pattern, or textual cues for colorblind users.",
+  },
+  "CS501-SUB-2.6": {
+    studentExplanation:
+      "Present and defend your explanation methodology before the review panel, explaining sampling stability, computational overhead, and how non-technical end users will interpret the results.",
+    evaluatorCriteria: [
+      "Student defends choice of attribution method (e.g. Shapley axioms vs perturbation-based LIME) under technical questioning.",
+      "Demonstrates stability analysis showing that small, unnoticeable input perturbations do not radically invert explanation output.",
+      "Communicates effectively to both engineering and non-technical stakeholders.",
+    ],
+    concreteEvidence:
+      "Submit presentation slides, stability analysis logs, and recorded defense summary notes.",
+    pitfallToAvoid:
+      "Inability to explain why Shapley values possess theoretical guarantees (efficiency, symmetry, additivity) compared to heuristic methods.",
+  },
+  "CS501-SUB-2.7": {
+    studentExplanation:
+      "Incorporate reviewer and user feedback to refine the explanation interface, adding a plain-language summary for lay users and an explicit limitations statement.",
+    evaluatorCriteria: [
+      "Adds plain-language, jargon-free summary cards alongside technical waterfall charts for end-user readability.",
+      "Remediates usability defects and unstable attribution edge cases identified in review.",
+      "Includes clear guidance on what actions a user can or cannot take based on the explanation (counterfactual framing).",
+    ],
+    concreteEvidence:
+      "Submit the updated interpreter UI code, before-and-after user evaluation feedback, and counterfactual explanation examples.",
+    pitfallToAvoid:
+      "Overstating certainty or promising that an automated explanation constitutes a legally binding adverse action notice without human review.",
+  },
+
+  // Activity 3: Conduct an AI Red Team Exercise (Security and Adversarial AI)
+  "CS501-SUB-3.1": {
+    studentExplanation:
+      "The evaluator wants to see that you understand the unique attack surfaces of machine learning systems, mapping risks against established taxonomies like MITRE ATLAS and the OWASP ML Security Top 10.",
+    evaluatorCriteria: [
+      "Accurately categorizes threats: evasion attacks (adversarial examples), training data poisoning, model extraction, and membership inference.",
+      "References MITRE ATLAS techniques and OWASP Machine Learning Security Top 10 vulnerabilities.",
+      "Establishes ethical guidelines and confirms testing remains strictly confined to isolated, approved environments.",
+    ],
+    concreteEvidence:
+      "Submit a comprehensive AI security threat taxonomy document cross-referencing MITRE ATLAS and OWASP ML Top 10.",
+    pitfallToAvoid:
+      "Treating AI security like traditional web application security, ignoring data-plane vulnerabilities like backdoor triggers and model inversion.",
+  },
+  "CS501-SUB-3.2": {
+    studentExplanation:
+      "Draft a formal, structured red team test plan defining strict rules of engagement, authorized target models, test boundaries, data privacy protections, and rollback safeguards.",
+    evaluatorCriteria: [
+      "Defines explicit test boundaries, authorized sandbox environments, and exclusion of live user data.",
+      "Specifies attack vectors to evaluate (e.g. prompt injection, evasion perturbations, gradient-based crafting).",
+      "Includes contingency and rollback procedures in case test workloads saturate compute or degrade shared services.",
+    ],
+    concreteEvidence:
+      "Submit the signed Red Team Rules of Engagement (RoE) document and pre-execution authorization checklist.",
+    pitfallToAvoid:
+      "Executing adversarial test payloads against public APIs or production environments without sandbox isolation and institutional authorization.",
+  },
+  "CS501-SUB-3.3": {
+    studentExplanation:
+      "Execute controlled adversarial perturbation tests against the model (e.g. FGSM/PGD for images, synonym replacement for text, or boundary jitter for tabular data) to identify vulnerability thresholds.",
+    evaluatorCriteria: [
+      "Generates reproducible adversarial perturbations within bounded epsilon limits.",
+      "Quantifies model performance degradation (e.g. accuracy drop or classification flip rate) under adversarial conditions.",
+      "Identifies which input features are most sensitive to malicious manipulation.",
+    ],
+    concreteEvidence:
+      "Provide reproducible test scripts, adversarial sample generation logs, and classification-confidence drop charts.",
+    pitfallToAvoid:
+      "Applying massive, overt perturbations that would easily be detected by basic pre-filtering, rather than testing stealthy, imperceptible attacks.",
+  },
+  "CS501-SUB-3.4": {
+    studentExplanation:
+      "Execute the end-to-end red team exercise across the target AI system, recording all attack attempts, execution timestamps, payload parameters, and resulting model behaviors into a standardized risk register.",
+    evaluatorCriteria: [
+      "Executes multiple attack vectors (evasion, prompt jailbreaks, model inversion probes) per approved test plan.",
+      "Maintains complete, tamper-evident execution logs with timestamps, input payloads, and output states.",
+      "Populates a comprehensive risk register prioritizing findings by severity, exploitability, and potential impact.",
+    ],
+    concreteEvidence:
+      "Submit the complete execution test harness, raw execution log dumps, and the populated AI Security Risk Register.",
+    pitfallToAvoid:
+      "Failing to log failed attack attempts, skewing the security report and obscuring defensive baseline robustness.",
+  },
+  "CS501-SUB-3.5": {
+    studentExplanation:
+      "Evaluate training data pipeline integrity against poisoning attacks and test inference outputs for Personally Identifiable Information (PII) leakage using tools like Microsoft Presidio.",
+    evaluatorCriteria: [
+      "Simulates training data poisoning scenario (label flipping or backdoor trigger injection) and measures compromised model behavior.",
+      "Applies Microsoft Presidio (or regex/NER pipelines) to detect and redact sensitive PII in model training and inference streams.",
+      "Validates input sanitization and dataset integrity hashing mechanisms.",
+    ],
+    concreteEvidence:
+      "Submit the poisoning simulation report, Presidio PII entity detection logs, and automated redaction test scripts.",
+    pitfallToAvoid:
+      "Relying on simple blacklists for PII detection rather than contextual Named Entity Recognition (NER) models.",
+  },
+  "CS501-SUB-3.6": {
+    studentExplanation:
+      "Present your red team findings to technical and security leadership, defending recommended defensive controls with cost, latency, and operational proportionality.",
+    evaluatorCriteria: [
+      "Presents prioritized findings mapped to MITRE ATLAS techniques clearly and persuasively.",
+      "Recommends practical, defense-in-depth countermeasures (adversarial training, input clipping, confidence thresholds, rate limiting).",
+      "Defends the operational trade-offs of proposed safeguards (e.g. latency impact of input sanitization).",
+    ],
+    concreteEvidence:
+      "Submit the formal Red Team Summary Report, executive presentation slides, and recorded defense transcript.",
+    pitfallToAvoid:
+      "Recommending extreme defensive controls that degrade standard user experience or increase latency beyond business SLA thresholds.",
+  },
+  "CS501-SUB-3.7": {
+    studentExplanation:
+      "Implement approved defensive mitigations, re-execute adversarial test suites, and prove measurable vulnerability reduction without functional performance regression.",
+    evaluatorCriteria: [
+      "Applies defensive patches (e.g. adversarial retraining, input sanitization middleware, or differential privacy noise).",
+      "Re-runs adversarial benchmarks demonstrating measurable reduction in attack success rates.",
+      "Runs standard regression test suite confirming core model accuracy on clean data remains preserved.",
+    ],
+    concreteEvidence:
+      "Submit patch code commits, before-and-after attack resistance metrics, and clean data regression test passes.",
+    pitfallToAvoid:
+      "Hardcoding fixes against only the specific test payloads used in the red team exercise rather than addressing the underlying attack vector.",
+  },
+
+  // Activity 4: Build an AI Compliance Dashboard (Compliance and Governance)
+  "CS501-SUB-4.1": {
+    studentExplanation:
+      "The evaluator wants to see that you understand regulatory and governance frameworks, comparing the EU AI Act (Regulation 2024/1689), the NIST AI Risk Management Framework (RMF 1.0), and OECD AI Principles.",
+    evaluatorCriteria: [
+      "Explains EU AI Act risk tiers (Unacceptable, High-Risk, Specific Transparency, Minimal Risk) and legal obligations.",
+      "Maps NIST AI RMF core functions: Govern, Map, Measure, Manage to AI lifecycle phases.",
+      "Articulates the necessity of human oversight, technical robustness, data governance, and post-market monitoring.",
+    ],
+    concreteEvidence:
+      "Submit structured governance notes and a comparative regulatory mapping table across EU AI Act, NIST AI RMF, and OECD principles.",
+    pitfallToAvoid:
+      "Assuming voluntary ethics guidelines are sufficient without preparing for statutory regulatory compliance and legal liability.",
+  },
+  "CS501-SUB-4.2": {
+    studentExplanation:
+      "Conduct a structured risk-classification analysis of an AI product scenario using the EU AI Act classification rules, documenting assumptions, regulatory caveats, and areas requiring expert legal counsel.",
+    evaluatorCriteria: [
+      "Applies EU AI Act Annex III criteria to evaluate whether the use case qualifies as High-Risk (e.g. credit scoring, biometrics, employment, education).",
+      "Documents system deployment context, user demographics, and severity of potential fundamental rights impacts.",
+      "Clearly identifies classification uncertainties and specifies triggers requiring institutional legal review.",
+    ],
+    concreteEvidence:
+      "Submit the completed Educational AI Risk Classification Worksheet with documented rationale and risk tier determination.",
+    pitfallToAvoid:
+      "Categorizing a high-consequence decision system as 'minimal risk' by selectively misinterpreting the intended purpose.",
+  },
+  "CS501-SUB-4.3": {
+    studentExplanation:
+      "Author a comprehensive, transparent Model Card following the standard proposed by Margaret Mitchell et al., covering intended use, out-of-scope uses, training data lineage, evaluation benchmarks, and ethical considerations.",
+    evaluatorCriteria: [
+      "Model Card comprehensively covers: Model Details, Intended Use, Factors, Metrics, Evaluation Data, Quantitative Analyses, and Ethical Considerations.",
+      "Explicitly defines prohibited out-of-scope applications to prevent misuse.",
+      "Discloses subgroup performance breakdowns and known limitations candidly.",
+    ],
+    concreteEvidence:
+      "Submit the finalized, publication-ready Markdown/HTML Model Card artifact for the audited AI model.",
+    pitfallToAvoid:
+      "Omitting the 'Caveats and Recommendations' or 'Out-of-Scope Uses' sections, treating the card as a marketing brochure rather than a transparency document.",
+  },
+  "CS501-SUB-4.4": {
+    studentExplanation:
+      "Develop an operational AI Compliance Dashboard that acts as the single source of truth for model metadata, risk classification, technical controls, evidence artifacts, and review status.",
+    evaluatorCriteria: [
+      "Interactive dashboard displays system owner, model version, risk tier, active controls, and open compliance issues.",
+      "Provides clickable links to verifiable evidence artifacts (fairness audit logs, red team reports, model cards).",
+      "Maintains audit trail tracking governance review milestones, status changes, and signatory approvals.",
+    ],
+    concreteEvidence:
+      "Submit the dashboard source code repository, deployed dashboard URL or screenshots, and sample compliance report exports.",
+    pitfallToAvoid:
+      "Displaying static mock data that is decoupled from actual underlying model monitoring artifacts and audit logs.",
+  },
+  "CS501-SUB-4.5": {
+    studentExplanation:
+      "Design and implement human-in-the-loop oversight mechanisms: decision queues for ambiguous/low-confidence outputs, manual override capabilities, and emergency kill-switch controls with immutable audit logging.",
+    evaluatorCriteria: [
+      "Implements confidence-threshold routing directing edge-case or high-risk inferences to authorized human reviewers.",
+      "Provides authenticated interface for human operators to inspect, overturn, or modify automated decisions.",
+      "Generates tamper-evident audit logs capturing who overrode what decision, when, and the stated justification.",
+    ],
+    concreteEvidence:
+      "Submit the human review workflow code, override interface screenshots, and generated audit trail logs.",
+    pitfallToAvoid:
+      "Providing override capabilities without logging the operator's identity and rationale, destroying non-repudiation.",
+  },
+  "CS501-SUB-4.6": {
+    studentExplanation:
+      "Simulate a formal AI Governance Board review. You will present your compliance dashboard, evaluate whether evidence satisfies regulatory requirements, identify residual risks, and record formal approval decisions.",
+    evaluatorCriteria: [
+      "Conducts systematic review of evidence against EU AI Act / NIST AI RMF compliance requirements.",
+      "Maintains formal review minutes documenting attendee identities, raised questions, and identified compliance gaps.",
+      "Produces a signed Decision Record detailing unconditional approval, conditional approval with action items, or rejection.",
+    ],
+    concreteEvidence:
+      "Submit the Governance Board Meeting Minutes, Gap Analysis Register, and signed Decision Record.",
+    pitfallToAvoid:
+      "Signing off on compliance approval while critical fairness or security findings remain unmitigated without documented risk acceptance.",
+  },
+  "CS501-SUB-4.7": {
+    studentExplanation:
+      "Address all conditional findings from the governance review, update dashboard evidence links, and publish the finalized, immutable governance record for organizational compliance records.",
+    evaluatorCriteria: [
+      "Closes all outstanding governance review action items with verified evidence updates.",
+      "Generates versioned, exportable compliance summary (PDF/JSON) suitable for regulatory inspection.",
+      "Establishes automated recurring review schedule and post-market monitoring trigger thresholds.",
+    ],
+    concreteEvidence:
+      "Submit the published Governance Summary artifact, evidence closure verification log, and post-market monitoring plan.",
+    pitfallToAvoid:
+      "Failing to establish continuous post-market monitoring rules, assuming that initial one-time compliance approval guarantees perpetual safety.",
+  },
 };
 
 /**

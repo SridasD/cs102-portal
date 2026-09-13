@@ -6,10 +6,13 @@ import {
   ChevronDown,
   Cloud,
   Database,
+  FileCheck2,
   Layers,
   MonitorSmartphone,
   Palette,
+  Scale,
   Server,
+  ShieldAlert,
   Workflow,
   Zap,
 } from "lucide-react";
@@ -27,6 +30,9 @@ const ACT_ICONS: Record<ActivityIcon, ComponentType<{ className?: string }>> = {
   design: Palette,
   performance: Zap,
   workflow: Workflow,
+  ethics: Scale,
+  security: ShieldAlert,
+  audit: FileCheck2,
 };
 
 const PART_THEMES: Record<string, { spine: string; iconWrap: string; chip: string }> = {

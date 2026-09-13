@@ -1,5 +1,6 @@
 import type { CourseData, ProgramInfo, ThinkingSkill } from "../types";
 import { CS102_DATA } from "./cs102";
+import { CS501_DATA } from "./cs501";
 import { CS601_DATA } from "./cs601";
 
 export const PROGRAM_INFO: ProgramInfo = {
@@ -19,6 +20,7 @@ export const PROGRAM_INFO: ProgramInfo = {
  */
 export const COURSES: Record<string, CourseData> = {
   cs102: CS102_DATA,
+  cs501: CS501_DATA,
   cs601: CS601_DATA,
 };
 
@@ -69,7 +71,8 @@ export const SEMESTER_1_CATALOG: {
       ltp: "3–0–0",
       description:
         "Bias mitigation, algorithmic fairness, regulatory compliance (EU AI Act), model explainability, and responsible AI governance.",
-      status: "preview",
+      status: "active",
+      slug: "cs501",
     },
     {
       code: "CS601",
