@@ -3,10 +3,8 @@ import {
   Award,
   BookOpen,
   Clock,
-  Cloud,
   GraduationCap,
   Layers,
-  MonitorSmartphone,
 } from "lucide-react";
 import Link from "next/link";
 import type { ComponentType } from "react";
@@ -42,12 +40,6 @@ export function CourseHeader({ courseData }: { courseData?: CourseData }) {
   const data = courseData ?? CS102_DATA;
   const course = data.course;
   const stats = getCourseStats(data);
-  const parts = data.parts ?? [];
-  const part1 = parts.find((p) => p.id === "I");
-  const part2 = parts.find((p) => p.id === "II");
-
-  const part1Hours = stats.partHours["I"] ?? 0;
-  const part2Hours = stats.partHours["II"] ?? 0;
 
   const allCourses = Object.values(COURSES);
 
@@ -113,23 +105,11 @@ export function CourseHeader({ courseData }: { courseData?: CourseData }) {
           </p>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Stat icon={Clock} label="Total hours" value={stats.totalHours} />
           <Stat icon={Award} label="Credits" value={stats.credits} accent="text-violet-600" />
           <Stat icon={Layers} label="Activities" value={stats.activityCount} accent="text-emerald-600" />
           <Stat icon={BookOpen} label="Sub-activities" value={stats.subActivityCount} accent="text-sky-600" />
-          <Stat
-            icon={MonitorSmartphone}
-            label={part1?.statLabel ?? "Part I hrs"}
-            value={part1Hours}
-            accent="text-indigo-600"
-          />
-          <Stat
-            icon={Cloud}
-            label={part2?.statLabel ?? "Part II hrs"}
-            value={part2Hours}
-            accent="text-sky-600"
-          />
         </div>
       </div>
     </header>
