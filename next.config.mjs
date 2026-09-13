@@ -6,6 +6,10 @@ const nextConfig = {
         source: "/cs102",
         destination: "/courses/cs102",
       },
+      {
+        source: "/cs601",
+        destination: "/courses/cs601",
+      },
     ];
   },
 };

@@ -547,6 +547,395 @@ const GUIDANCE_MAP: Record<string, EvaluationGuidance> = {
     pitfallToAvoid:
       "Leaving billable cloud resources (e.g. idle databases, load balancers, NAT gateways) running after project submission.",
   },
+
+  /* =========================================================================
+   * CS601: Advanced Frontend Frameworks
+   * ========================================================================= */
+
+  // Activity 1: Build a Zero-Lag News Portal (Rendering Strategies)
+  "CS601-SUB-1.1": {
+    studentExplanation:
+      "The reviewer wants to see that you understand the modern rendering spectrum in depth. You must clearly contrast Client-Side Rendering (CSR), Server-Side Rendering (SSR), Static Site Generation (SSG), Incremental Static Regeneration (ISR), React Server Components (RSC), and progressive streaming.",
+    evaluatorCriteria: [
+      "Distinguishes execution environments (browser client, edge runtime, Node server) and request lifecycles across CSR, SSR, SSG, ISR, and streaming.",
+      "Accurately maps trade-offs across initial page load latency (TTFB/FCP), data freshness, search engine crawler discoverability (SEO), and server computing cost.",
+      "Explains hydration mechanics and identifies why monolithic hydration causes Total Blocking Time (TBT) bottlenecks.",
+    ],
+    concreteEvidence:
+      "Submit structured comparison notes accompanied by an architectural decision matrix table contrasting all 6 rendering models across latency, caching, and server load.",
+    pitfallToAvoid:
+      "Treating SSR as a universal performance silver bullet without acknowledging increased Time to First Byte (TTFB) and origin server scaling costs compared to edge-cached SSG.",
+  },
+  "CS601-SUB-1.2": {
+    studentExplanation:
+      "The evaluator examines your architectural reasoning when assigned realistic web portal requirements. You must recommend and justify the precise rendering model for four distinct page archetypes: public breaking news, personalized subscriber feeds, rapidly updating financial tickers, and private account dashboards.",
+    evaluatorCriteria: [
+      "Public breaking news assigned SSG + ISR (or edge caching with on-demand revalidation) with justified cache invalidation windows.",
+      "Personalized feeds assigned streaming SSR or client data fetching with Suspense boundaries to prevent blocking the global page shell.",
+      "Live updating ticker data correctly assigned client polling, WebSockets, or Server-Sent Events (SSE) rather than repeated full-page server renders.",
+      "Private dashboard pages correctly isolated behind authentication boundaries with client-side or session-aware SSR.",
+    ],
+    concreteEvidence:
+      "Submit a written scenario analysis defending each rendering decision against real-world traffic spikes, latency SLAs, and cache hit ratios.",
+    pitfallToAvoid:
+      "Applying SSR to static evergreen pages or using SSG for user-specific data that leaks across sessions.",
+  },
+  "CS601-SUB-1.3": {
+    studentExplanation:
+      "Demonstrate that you can implement a lean, server-rendered page using Next.js App Router (or Nuxt server components) where initial HTML is delivered fully populated from the server without unnecessary client JavaScript overhead.",
+    evaluatorCriteria: [
+      "Server component or server route successfully queries upstream news data and renders semantic HTML before sending it to the client.",
+      "Network tab inspection confirms zero unnecessary client bundle overhead for static article presentation.",
+      "Server-side errors (such as upstream API timeouts) are intercepted gracefully with dedicated error boundaries (`error.tsx`) rather than crashing the process.",
+      "Includes fallback states (`loading.tsx`) that stream immediate visual layout shells to the client.",
+    ],
+    concreteEvidence:
+      "Provide working server-rendered page source code, network trace screenshots proving initial HTML contains populated article markup, and error-boundary verification.",
+    pitfallToAvoid:
+      "Marking components with 'use client' indiscriminately, which drags server fetching logic and heavy dependencies into the client JavaScript bundle.",
+  },
+  "CS601-SUB-1.4": {
+    studentExplanation:
+      "Build the complete, production-grade Zero-Lag News Portal. The portal must feature category feeds, breaking news banners, article reading views, and non-blocking background revalidation with instant client navigation.",
+    evaluatorCriteria: [
+      "Fully working news portal implementing ISR / on-demand revalidation for breaking updates without blocking interactive users.",
+      "Handles all UI states gracefully: immediate skeleton loading, empty category feeds, stale-while-revalidate badges, and network retry flows.",
+      "Automated tests (unit, component, and end-to-end integration) verify article rendering and dynamic routing.",
+      "Client-side page transitions feel instantaneous with optimistic route prefetching.",
+    ],
+    concreteEvidence:
+      "Submit the versioned Git repository link, verified test suite results, and recorded browser session demonstrating instant navigation and live background content refresh.",
+    pitfallToAvoid:
+      "Forgetting loading skeletons or layout sizing, causing jarring page flashes or reflows when fresh articles arrive.",
+  },
+  "CS601-SUB-1.5": {
+    studentExplanation:
+      "Audit your news portal against strict Core Web Vitals and accessibility standards. Evaluators will specifically test Cumulative Layout Shift (CLS), keyboard focus traps, screen reader landmarks, and contrast.",
+    evaluatorCriteria: [
+      "Cumulative Layout Shift (CLS) scores under 0.05 across all viewports, ensuring images, ad slots, and dynamic news tickers do not cause visual jumps.",
+      "WCAG 2.1 AA compliance verified with zero critical Axe / Lighthouse accessibility violations.",
+      "Proper semantic headings hierarchy (single <h1>, logical <h2>/<h3>) and ARIA live regions (aria-live='polite') for breaking news alerts.",
+      "Full keyboard navigability with visible focus indicators and a functional skip-to-content link.",
+    ],
+    concreteEvidence:
+      "Submit an automated Lighthouse audit report, Core Web Vitals diagnostic trace, and an annotated accessibility review log with before-and-after fixes.",
+    pitfallToAvoid:
+      "Rendering unsized <img> elements or dynamic banners above the fold without reserved aspect-ratio containers, resulting in heavy CLS penalties.",
+  },
+  "CS601-SUB-1.6": {
+    studentExplanation:
+      "Defend your architectural choices in front of the evaluator. You will walk through the application running under throttled network conditions, explain caching headers, and justify where your hydration boundaries sit.",
+    evaluatorCriteria: [
+      "Student demonstrates rendering, background refresh, and edge failure recovery live under 3G throttling.",
+      "Explains Cache-Control, s-maxage, and stale-while-revalidate response header configurations with technical precision.",
+      "Justifies why specific interactive widgets were hydrated on the client while the core article body remained zero-JS server markup.",
+    ],
+    concreteEvidence:
+      "Provide a recorded walkthrough or live demonstration notes accompanied by DevTools performance trace timelines highlighting hydration cost.",
+    pitfallToAvoid:
+      "Inability to explain the difference between build-time static generation and runtime server rendering when queried by the examiner.",
+  },
+  "CS601-SUB-1.7": {
+    studentExplanation:
+      "Act upon the review findings to optimize portal performance. You must prove measurable gains in Largest Contentful Paint (LCP) and visual stability using objective before-and-after profiling.",
+    evaluatorCriteria: [
+      "Measurable reduction in LCP (e.g. optimizing critical hero image with priority loading and modern WebP/AVIF formats).",
+      "Zero regression in accessibility or functional unit tests after optimizations are applied.",
+      "Updated Architecture Decision Record (ADR) detailing root causes of earlier performance bottlenecks and the remedial measures taken.",
+    ],
+    concreteEvidence:
+      "Submit Git pull request diff, before-and-after Lighthouse / WebPageTest metrics comparison table, and updated engineering decision records.",
+    pitfallToAvoid:
+      "Introducing client-side hacks (like hiding content with CSS opacity) instead of fixing root server-rendering or font-loading reflows.",
+  },
+
+  // Activity 2: Build a FinTech Onboarding Engine (State and Data Flow)
+  "CS601-SUB-2.1": {
+    studentExplanation:
+      "The evaluator wants to verify that you understand modern state taxonomy. In a sophisticated FinTech application, treating server cache, transient UI state, URL search params, and multi-step business state as one big global object is a catastrophic anti-pattern.",
+    evaluatorCriteria: [
+      "Accurately categorizes state into: Local UI State (accordion open), Form State (dirty/touched values), URL/Route State (step, filters), Server Cache State (queries, mutations), and Machine/Workflow State (KYC approval progression).",
+      "Identifies appropriate ownership and lifecycle management tools for each state category (e.g. React useState vs TanStack Query vs XState).",
+      "State transition diagram covers all valid applicant onboarding states (Draft -> Identity Verified -> Bank Linked -> Compliance Review -> Approved / Rejected).",
+    ],
+    concreteEvidence:
+      "Submit a state taxonomy classification paper and an interactive statechart diagram (Stately.ai / Mermaid) modeling the onboarding workflow.",
+    pitfallToAvoid:
+      "Copying server API responses into global Redux/Zustand stores without caching, deduplication, or revalidation strategies.",
+  },
+  "CS601-SUB-2.2": {
+    studentExplanation:
+      "Investigate how FinTech onboarding breaks in the real world. You must identify failure modes such as network disconnects mid-upload, duplicate credit card charges from double submissions, stale document reviews, and browser back-button anomalies.",
+    evaluatorCriteria: [
+      "Identifies race conditions and proposes idempotent request handling with UUID client mutation keys.",
+      "Addresses offline recovery and transient session interruption without losing sensitive user-filled data.",
+      "Defines strict state guards that prevent users from jumping directly to Step 4 (Confirmation) if Step 2 (Identity Verification) failed or is pending.",
+    ],
+    concreteEvidence:
+      "Submit a comprehensive failure mode and effects analysis (FMEA) document detailing 4 distinct onboarding failure scenarios and their architectural remedies.",
+    pitfallToAvoid:
+      "Relying purely on client-side state flags to guard steps, allowing malicious users to bypass verification by manually editing browser localStorage.",
+  },
+  "CS601-SUB-2.3": {
+    studentExplanation:
+      "Create an isolated, highly robust multi-field form step (e.g. Government ID or Bank Account Verification) powered by declarative schema validation (Zod) and explicit state feedback.",
+    evaluatorCriteria: [
+      "Form validation implemented with Zod (or Yup) handling type coercion, format regex, and contextual error messages.",
+      "Field-level touched/dirty tracking prevents aggressive premature error flashing before user interaction.",
+      "Clear visual and screen-reader accessible feedback for pending async verification, validation errors, and success states.",
+      "Unit tests verify synchronous validation rules and mocked async server validation.",
+    ],
+    concreteEvidence:
+      "Provide working form component code, Zod validation schema, test files, and screen recordings showing validation feedback.",
+    pitfallToAvoid:
+      "Submitting forms without disabling the submit trigger during in-flight network requests, allowing duplicate concurrent submissions.",
+  },
+  "CS601-SUB-2.4": {
+    studentExplanation:
+      "Build the complete, production-grade FinTech Onboarding Engine. Wire an explicit finite state machine (using XState or custom reducer) to TanStack Query for server data synchronization, with secure data transmission and persistent session resumption.",
+    evaluatorCriteria: [
+      "Finite state machine explicitly models states, events, guards, and context, making illegal transitions mathematically impossible.",
+      "TanStack Query manages server state with query invalidation, retry logic, and optimistic UI mutations where appropriate.",
+      "Onboarding progress is encrypted/persisted securely so users can resume after browser refresh or tab closure.",
+      "Comprehensive test suite covers happy paths, validation failures, server 500 errors, and session resumption.",
+    ],
+    concreteEvidence:
+      "Submit versioned application repository, exported state machine schema, unit and integration test reports, and end-to-end Playwright tests.",
+    pitfallToAvoid:
+      "Storing raw unmasked Social Security Numbers (SSN), BVN, or credit card CVVs in plain localStorage or unencrypted client state.",
+  },
+  "CS601-SUB-2.5": {
+    studentExplanation:
+      "Conduct a thorough security and accessibility review of your onboarding engine. Evaluators will inspect whether PII data is minimized, input masking protects sensitive fields, and step transitions manage focus properly for keyboard and screen reader users.",
+    evaluatorCriteria: [
+      "Threat model checklist verifies zero PII data leakage into analytics, console logs, or unencrypted storage.",
+      "WCAG 2.1 AA compliant step transitions: focus automatically shifts to step headings upon step advancement.",
+      "State transition test suite verifies all machine guards block unauthorized state traversal.",
+      "All form controls are programmatically associated with descriptive error containers via aria-errormessage and aria-invalid.",
+    ],
+    concreteEvidence:
+      "Submit the completed FinTech security threat checklist, state machine unit test coverage report, and assistive tech screen reader testing notes.",
+    pitfallToAvoid:
+      "Leaving focus lost on the document body after advancing steps, forcing screen reader users to re-navigate the entire header.",
+  },
+  "CS601-SUB-2.6": {
+    studentExplanation:
+      "Demonstrate your onboarding engine live under adversarial conditions. The reviewer will ask you to interrupt an active session, disconnect the network, simulate server rejection, and explain why your state machine design handles the failure gracefully.",
+    evaluatorCriteria: [
+      "Live demonstration demonstrates session recovery after hard browser refresh and network disconnection.",
+      "Student triggers invalid state events and proves the state machine cleanly rejects unauthorized transitions.",
+      "Student defends state segregation (why certain data lives in URL query params vs server cache vs local component state).",
+    ],
+    concreteEvidence:
+      "Provide a live defense recording or annotated session slides with step-by-step state transition logs captured in DevTools.",
+    pitfallToAvoid:
+      "Failing to demonstrate how the user recovers when an upstream server returns a 422 Unprocessable Entity or 503 Service Unavailable error.",
+  },
+  "CS601-SUB-2.7": {
+    studentExplanation:
+      "Profile your onboarding workflow using React Profiler / Vue DevTools to eradicate unnecessary re-renders, optimize context providers, and resolve state synchronicity edge cases.",
+    evaluatorCriteria: [
+      "Profiler flamegraphs demonstrate elimination of cascading re-renders across unaffected form fields during keystrokes.",
+      "State contexts decomposed or memoized (useMemo, useCallback, or atomic state selectors) to isolate render boundaries.",
+      "Automated regression test suite proves zero functionality or validation regressions.",
+    ],
+    concreteEvidence:
+      "Submit before-and-after profiler flamegraph comparisons, patch pull request, and updated performance documentation.",
+    pitfallToAvoid:
+      "Blindly wrapping every single helper function in useCallback without measuring whether function recreation was actually causing re-renders.",
+  },
+
+  // Activity 3: Create a Headless UI Component Library (Design Systems)
+  "CS601-SUB-3.1": {
+    studentExplanation:
+      "The evaluator wants to see that you understand headless UI architecture. You must explain how headless libraries decouple behavior, state management, and WAI-ARIA keyboard mechanics from visual presentation, and how design token pipelines enforce visual consistency.",
+    evaluatorCriteria: [
+      "Accurately articulates the architectural separation between unstyled behavioral primitives (Radix, React Aria, Headless UI) and styled presentation layers.",
+      "Explains design token hierarchy (Global -> Semantic -> Component tokens) across colors, typography, spacing, and elevation.",
+      "Summarizes WAI-ARIA Authoring Practices Guide (APG) requirements for common primitives (Dialog, Menu, Combobox, Accordion).",
+    ],
+    concreteEvidence:
+      "Submit foundational notes covering headless component architecture, a structured design token taxonomy map, and an APG accessibility pattern summary.",
+    pitfallToAvoid:
+      "Confusing a styled component library (like MUI or Bootstrap) with a headless primitive library that delegates rendering to consumers.",
+  },
+  "CS601-SUB-3.2": {
+    studentExplanation:
+      "Analyze component API design trade-offs. You must compare boolean prop proliferation ('prop drilling hell') against composition patterns (compound components, render props, slot patterns) and select clean, extensible API contracts.",
+    evaluatorCriteria: [
+      "Identifies issues with mega-components possessing 40+ boolean props (isRounded, hasIconLeft, isPrimarySmallLoading).",
+      "Defines compound component architecture (e.g. <Menu><Menu.Trigger /><Menu.Content><Menu.Item /></Menu.Content></Menu>) that allows ergonomic consumer customization.",
+      "Specifies clean TypeScript generic contracts supporting polymorphism (asChild pattern or as polymorphic prop).",
+    ],
+    concreteEvidence:
+      "Submit an API comparison document evaluating compound vs monolithic designs for a complex Dialog or Select primitive with revised component contracts.",
+    pitfallToAvoid:
+      "Designing rigid component APIs that require modifying the core library source code whenever a consumer needs an icon in a slightly different position.",
+  },
+  "CS601-SUB-3.3": {
+    studentExplanation:
+      "Prototype accessible Button and Dropdown Menu primitives from scratch (or using unstyled headless cores) adhering 100% to WAI-ARIA APG keyboard and focus standards.",
+    evaluatorCriteria: [
+      "Button primitive correctly exposes native <button> behavior, supports disabled/aria-disabled states, and handles loading spinners without losing focus.",
+      "Dropdown Menu primitive implements full WAI-ARIA keyboard interaction: Enter/Space/DownArrow opens, Up/Down moves focus, Escape closes and returns focus to trigger.",
+      "Appropriate ARIA roles (role='menu', role='menuitem'), states (aria-expanded, aria-haspopup), and roving tabindex implemented correctly.",
+      "Automated unit tests verify keyboard event handlers and focus transitions.",
+    ],
+    concreteEvidence:
+      "Submit working prototype code, automated Vitest/Jest unit tests, and keyboard interaction trace recordings.",
+    pitfallToAvoid:
+      "Building a dropdown menu using <div> elements with click handlers without keyboard event listeners or ARIA menu semantics.",
+  },
+  "CS601-SUB-3.4": {
+    studentExplanation:
+      "Build, document, and test the full component library. Package tokens, core primitives (Button, Input, Modal/Dialog, Dropdown Menu, Tabs, Toast), dark/light theme switching, and interactive Storybook documentation.",
+    evaluatorCriteria: [
+      "Versioned npm-compatible package structure with clean ES Module and TypeScript declaration exports.",
+      "Theme engine supports runtime switching (light, dark, high contrast) driven by CSS custom properties and design tokens.",
+      "Storybook stories created for all components covering default, disabled, variant, and edge-case states.",
+      "Automated end-to-end tests using Playwright verify keyboard focus and modal traps across Chromium, Firefox, and WebKit.",
+    ],
+    concreteEvidence:
+      "Submit library Git repository, packaged npm tarball build, deployed Storybook preview link, and Playwright test suite reports.",
+    pitfallToAvoid:
+      "Coupling component styling directly to hardcoded HEX color codes rather than semantic CSS variables or design tokens.",
+  },
+  "CS601-SUB-3.5": {
+    studentExplanation:
+      "Execute an accessibility, visual consistency, and API ergonomics audit across your entire component library. Evaluators will inspect focus indicators, contrast ratios in dark mode, and consistent naming conventions.",
+    evaluatorCriteria: [
+      "Zero contrast violations in both light and dark modes (minimum 4.5:1 for body text, 3:1 for interactive borders/icons).",
+      "Consistent prop naming conventions across all primitives (e.g. disabled, size, variant, onValueChange).",
+      "Focus rings remain visible and un-obscured across all themed backgrounds.",
+      "Dialog primitive successfully traps focus and restores focus to trigger upon dismissal.",
+    ],
+    concreteEvidence:
+      "Submit automated Storybook accessibility addon (axe-core) test run output, visual regression test results, and peer review feedback log.",
+    pitfallToAvoid:
+      "Applying outline: none on interactive components without providing a customized high-contrast :focus-visible replacement.",
+  },
+  "CS601-SUB-3.6": {
+    studentExplanation:
+      "Present and defend your design system to the evaluation panel. Demonstrate how a new consumer application can be built in minutes using your library, and defend your decisions on token hierarchy and composition.",
+    evaluatorCriteria: [
+      "Live demonstration proves consuming the library in an external sample app with minimal boilerplate.",
+      "Demonstrates instant theme switching and responsive behavior.",
+      "Student defends architectural decisions regarding why certain primitives were built headless vs styled.",
+    ],
+    concreteEvidence:
+      "Provide live demonstration recordings or presentation slides supported by interactive Storybook documentation.",
+    pitfallToAvoid:
+      "Demonstrating components only in isolation without showing them interacting within a realistic consumer application layout.",
+  },
+  "CS601-SUB-3.7": {
+    studentExplanation:
+      "Polish your component library for public or organizational release. Address peer audit findings, generate semantic changelogs, write consumer onboarding documentation, and establish versioning standards.",
+    evaluatorCriteria: [
+      "All review findings resolved with traceable commit history.",
+      "Semantic Versioning (SemVer) and automated Changelog generation implemented (e.g. via Changesets).",
+      "Clear consumer documentation with copy-paste code recipes and installation instructions.",
+      "Production bundle size optimized with tree-shaking verification (sideEffects: false in package.json).",
+    ],
+    concreteEvidence:
+      "Submit published release artifacts, generated CHANGELOG.md, bundle-analyzer report showing tree-shaking, and a working consumer starter app.",
+    pitfallToAvoid:
+      "Publishing a release with missing TypeScript .d.ts types or bundling entire CSS stylesheets into JS chunks that break tree-shaking.",
+  },
+
+  // Activity 4: Build a Global Personalization Engine (Frontend Performance)
+  "CS601-SUB-4.1": {
+    studentExplanation:
+      "The evaluator wants to see that you understand the mechanics of high-performance frontend delivery. You must explain how JavaScript bundle costs impact CPU execution time, how edge computing moves computation closer to users, and how Core Web Vitals (LCP, INP, CLS) are measured.",
+    evaluatorCriteria: [
+      "Explains the cost of JavaScript beyond download size (parse, compile, execute, garbage collection) and its impact on Interaction to Next Paint (INP).",
+      "Architectural diagram illustrates edge network topology (CDN edge nodes vs origin server) and edge compute capabilities (V8 isolates, Cloudflare Workers, Vercel Edge Runtime).",
+      "Defines realistic performance budgets (e.g. < 150KB initial JS, LCP < 2.0s, INP < 150ms, CLS < 0.05).",
+    ],
+    concreteEvidence:
+      "Submit performance engineering notes, edge request routing diagram, and an explicit performance budget configuration file.",
+    pitfallToAvoid:
+      "Measuring performance exclusively on high-end developer workstations with high-speed fiber internet instead of simulated mid-tier mobile devices.",
+  },
+  "CS601-SUB-4.2": {
+    studentExplanation:
+      "Analyze the architectural dilemma of personalization vs cacheability. Personalizing content on traditional servers often forces cache bypass (Cache-Control: private, no-store), causing slow TTFB globally. You must identify these risks and propose edge-native caching boundaries.",
+    evaluatorCriteria: [
+      "Identifies cache leakage vulnerabilities (e.g. accidentally caching user A's private profile in a shared edge CDN and serving it to user B).",
+      "Explains hydration mismatch risks when edge runtime modifies markup before client hydration.",
+      "Defines boundary rules separating globally cacheable static shells from user-personalized dynamic slots.",
+    ],
+    concreteEvidence:
+      "Submit a risk analysis document detailing cache contamination scenarios, hydration failure paths, and edge mitigation strategies.",
+    pitfallToAvoid:
+      "Using generic CDN caching rules (Cache-Control: public, max-age=3600) on personalized routes containing confidential user information.",
+  },
+  "CS601-SUB-4.3": {
+    studentExplanation:
+      "Prototype dynamic code splitting and streaming HTML responses using React Suspense or framework-level streaming. Heavy third-party widgets (e.g. charting libraries, rich text editors) must load asynchronously without delaying initial page render.",
+    evaluatorCriteria: [
+      "Dynamic imports (next/dynamic or React.lazy) isolate heavy dependencies into distinct split chunks.",
+      "React Suspense boundaries stream the primary layout shell immediately while the personalized data slot resolves in the background.",
+      "Bundle analysis confirms heavy libraries are excluded from the main entry chunk.",
+      "Fallback skeleton displays smoothly without triggering Cumulative Layout Shift (CLS).",
+    ],
+    concreteEvidence:
+      "Submit prototype source code, Webpack/Rollup bundle analysis screenshots, and streaming network waterfall traces.",
+    pitfallToAvoid:
+      "Importing heavy utility libraries (like lodash or moment.js) at the root layout level, bloating the bundle for every single page.",
+  },
+  "CS601-SUB-4.4": {
+    studentExplanation:
+      "Build the complete Global Personalization Engine. Use edge middleware to detect user location, device, and authentication status, personalize content at edge sub-10ms latency, and stream recommendations into a cached page shell.",
+    evaluatorCriteria: [
+      "Edge middleware reads cookies / geolocation headers and personalizes requests at the CDN edge before hitting origin servers.",
+      "Personalized content slots stream into the UI via Suspense without blocking the globally cached page shell.",
+      "Zero cache leakage guaranteed through strict cookie isolation and Vary header configurations.",
+      "Automated tests verify edge routing, personalization rules, and multi-region fallback logic.",
+    ],
+    concreteEvidence:
+      "Submit integrated application codebase, edge function implementation, automated integration test suite, and deployed edge application URL.",
+    pitfallToAvoid:
+      "Executing heavy database queries or un-memoized cryptographic operations inside edge middleware, causing severe TTFB degradation.",
+  },
+  "CS601-SUB-4.5": {
+    studentExplanation:
+      "Conduct a comprehensive review of the personalization engine under stress. Evaluators will test Core Web Vitals under throttled network profiles, verify data privacy compliance, and check edge fallback behavior when personalization microservices fail.",
+    evaluatorCriteria: [
+      "Lighthouse Performance score >= 90 with green Core Web Vitals (LCP < 2.5s, INP < 200ms, CLS < 0.1) under simulated mobile throttling.",
+      "Privacy audit verifies no sensitive PII is leaked in edge logs, cache keys, or unencrypted cookies.",
+      "Resilience verification: when personalization services timeout or fail, the system falls back gracefully to standard generic content.",
+    ],
+    concreteEvidence:
+      "Submit automated Lighthouse audit reports, bundle visualizer treemaps, privacy audit checklist, and fault-injection test logs.",
+    pitfallToAvoid:
+      "Allowing an edge personalization failure to crash the entire application with an unhandled 500 error instead of displaying default content.",
+  },
+  "CS601-SUB-4.6": {
+    studentExplanation:
+      "Defend your performance architecture in front of the reviewer. Run live tests under varying conditions (anonymous user, authenticated user, simulated Tokyo vs New York latency, and offline/slow 3G) and defend your trade-offs.",
+    evaluatorCriteria: [
+      "Live demonstration shows sub-second personalized rendering across simulated geographic regions.",
+      "Student demonstrates graceful degradation under edge outage or slow upstream response conditions.",
+      "Student articulates and defends caching architecture, bundle budget enforcement, and streaming boundary placement.",
+    ],
+    concreteEvidence:
+      "Provide a recorded multi-condition demonstration or presentation slides accompanied by DevTools performance profiling traces.",
+    pitfallToAvoid:
+      "Claiming edge performance gains without providing empirical latency measurements comparing origin-only versus edge-accelerated paths.",
+  },
+  "CS601-SUB-4.7": {
+    studentExplanation:
+      "Execute final production optimizations based on evaluation feedback. Fine-tune critical rendering paths, preconnect resource hints, optimize font delivery, and compile a production operational runbook.",
+    evaluatorCriteria: [
+      "Critical resource hints (<link rel='preconnect'>, next/font zero-layout-shift font optimization) implemented and verified.",
+      "All review findings closed with verified Git commits and regression test passes.",
+      "Operational runbook completed with cache invalidation instructions, edge deployment guidelines, and incident troubleshooting steps.",
+    ],
+    concreteEvidence:
+      "Submit final patch diff, before-and-after performance metrics comparison table, regression test report, and production operational runbook.",
+    pitfallToAvoid:
+      "Overusing <link rel='preload'> for low-priority assets, which starves critical CSS and JavaScript bandwidth during early page load.",
+  },
 };
 
 /**

@@ -9,6 +9,7 @@ export const CS102_COURSE: Course = {
   ltp: "1–0–3",
   credits: 4,
   totalHours: 120,
+  type: "core",
 };
 
 export const CS102_PARTS: CoursePart[] = [

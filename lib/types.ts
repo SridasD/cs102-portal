@@ -11,7 +11,10 @@ export type ActivityIcon =
   | "backend"
   | "database"
   | "integration"
-  | "cloud";
+  | "cloud"
+  | "design"
+  | "performance"
+  | "workflow";
 
 export interface Resource {
   label: string;
@@ -20,7 +23,7 @@ export interface Resource {
 }
 
 export interface SubActivity {
-  /** local code, e.g. "1.4" */
+  /** local code, e.g. "1.4" or "CS601-SUB-1.4" */
   id: string;
   title: string;
   hours: number;
@@ -34,9 +37,9 @@ export interface SubActivity {
 }
 
 export interface Activity {
-  /** formal id, e.g. "CS102-ACT-01" */
+  /** formal id, e.g. "CS102-ACT-01" or "CS601-ACT-01" */
   id: string;
-  part: "I" | "II";
+  part: string;
   icon: ActivityIcon;
   hours: number;
   title: string;
@@ -54,13 +57,14 @@ export interface Course {
   ltp: string;
   credits: number;
   totalHours: number;
+  type?: "core" | "elective";
 }
 
 export interface CoursePart {
-  id: "I" | "II";
+  id: string;
   label: string;
   statLabel?: string;
-  color: "indigo" | "sky" | "emerald" | "violet";
+  color: "indigo" | "sky" | "emerald" | "violet" | "amber" | "rose" | "teal";
 }
 
 export interface CourseData {

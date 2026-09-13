@@ -138,6 +138,7 @@ export function SubActivityDetail({
   const tagClass = TAG_STYLES[sub.tag] ?? "bg-slate-50 text-slate-700 ring-slate-200";
   const panelId = `subactivity-${sub.id.replaceAll(".", "-")}-panel`;
   const buttonId = `subactivity-${sub.id.replaceAll(".", "-")}-button`;
+  const actPrefix = sub.id.split(".")[0];
   const moocByActivity: Record<string, string> = {
     "1": "M01",
     "2": "M02",
@@ -145,7 +146,12 @@ export function SubActivityDetail({
     "4": "M01",
     "5": "M04",
   };
-  const resourceIds = [...sub.resources, moocByActivity[sub.id.split(".")[0]]].filter(Boolean);
+  const potentialMooc = moocByActivity[actPrefix];
+  const activeResources = resources ?? DEFAULT_RESOURCES;
+  const hasMooc = potentialMooc && activeResources[potentialMooc];
+  const resourceIds = [...sub.resources, hasMooc ? potentialMooc : null].filter(
+    (id): id is string => typeof id === "string" && Boolean(activeResources[id])
+  );
 
   return (
     <article className="relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md lg:col-span-2">
@@ -165,7 +171,9 @@ export function SubActivityDetail({
           </span>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">SUB-{sub.id}</span>
+              <span className="rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">
+                {sub.id.startsWith("CS") ? sub.id : `SUB-${sub.id}`}
+              </span>
               <Badge className={tagClass}>{sub.tag}</Badge>
             </div>
             <h4 className="mt-2 text-base font-bold leading-snug text-slate-950">{sub.title}</h4>

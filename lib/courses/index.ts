@@ -1,5 +1,6 @@
 import type { CourseData, ProgramInfo, ThinkingSkill } from "../types";
 import { CS102_DATA } from "./cs102";
+import { CS601_DATA } from "./cs601";
 
 export const PROGRAM_INFO: ProgramInfo = {
   code: "MSDSPD-2026",
@@ -10,14 +11,88 @@ export const PROGRAM_INFO: ProgramInfo = {
   department: "School of Digital Sciences",
   tagline: "Activity-based, evidence-driven product engineering and cloud systems curriculum.",
   description:
-    "An advanced, hands-on master's curriculum combining modern full-stack web architecture, API engineering, relational persistence, secure containerized delivery, and cloud-native serverless systems.",
+    "An advanced, hands-on master's curriculum combining modern full-stack web architecture, AI systems, modern frontend engineering, data pipelines, and cloud-native serverless infrastructure.",
 };
 
 /**
- * Registry of all courses in the MSDSPD 2026 curriculum portal.
+ * Registry of all active courses in the MSDSPD 2026 curriculum portal.
  */
 export const COURSES: Record<string, CourseData> = {
   cs102: CS102_DATA,
+  cs601: CS601_DATA,
+};
+
+export interface SemesterCoursePreview {
+  code: string;
+  title: string;
+  category: "core" | "elective";
+  credits: number;
+  ltp: string;
+  description: string;
+  status: "active" | "preview";
+  slug?: string;
+}
+
+export const SEMESTER_1_CATALOG: {
+  core: SemesterCoursePreview[];
+  electives: SemesterCoursePreview[];
+} = {
+  core: [
+    {
+      code: "CS101",
+      title: "Advanced AI & Machine Learning",
+      category: "core",
+      credits: 4,
+      ltp: "3–0–1",
+      description:
+        "Deep learning foundations, Transformer architectures, neural networks, and scalable production ML deployment.",
+      status: "preview",
+    },
+    {
+      code: "CS102",
+      title: "Full Stack Architecture & Cloud-Native Dev",
+      category: "core",
+      credits: 4,
+      ltp: "1–0–3",
+      description:
+        "Modern full-stack web architecture, API engineering, relational persistence, secure containerized delivery, and cloud-native serverless systems.",
+      status: "active",
+      slug: "cs102",
+    },
+  ],
+  electives: [
+    {
+      code: "CS501",
+      title: "AI Ethics & Governance",
+      category: "elective",
+      credits: 3,
+      ltp: "3–0–0",
+      description:
+        "Bias mitigation, algorithmic fairness, regulatory compliance (EU AI Act), model explainability, and responsible AI governance.",
+      status: "preview",
+    },
+    {
+      code: "CS601",
+      title: "Advanced Frontend Frameworks",
+      category: "elective",
+      credits: 3,
+      ltp: "1–0–2",
+      description:
+        "Deep dive into React/Next.js or Vue/Nuxt: rendering topologies (CSR, SSR, SSG, ISR), state machines, headless design systems, and edge streaming.",
+      status: "active",
+      slug: "cs601",
+    },
+    {
+      code: "CS1101",
+      title: "Big Data Analytics",
+      category: "elective",
+      credits: 3,
+      ltp: "2–0–1",
+      description:
+        "Processing massive datasets with Apache Spark and Apache Flink, distributed stream processing, and lakehouse pipeline architecture.",
+      status: "preview",
+    },
+  ],
 };
 
 /** Tailwind classes per Thinking-Skill tag (badge fill + ring). */

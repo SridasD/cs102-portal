@@ -8,7 +8,10 @@ import {
   Database,
   Layers,
   MonitorSmartphone,
+  Palette,
   Server,
+  Workflow,
+  Zap,
 } from "lucide-react";
 import type { ComponentType } from "react";
 import type { Activity, ActivityIcon, Resource, SubActivity } from "@/lib/types";
@@ -21,6 +24,32 @@ const ACT_ICONS: Record<ActivityIcon, ComponentType<{ className?: string }>> = {
   database: Database,
   integration: Boxes,
   cloud: Cloud,
+  design: Palette,
+  performance: Zap,
+  workflow: Workflow,
+};
+
+const PART_THEMES: Record<string, { spine: string; iconWrap: string; chip: string }> = {
+  "I": {
+    spine: "bg-indigo-500",
+    iconWrap: "bg-indigo-50 text-indigo-600",
+    chip: "bg-indigo-50 text-indigo-700 ring-indigo-200",
+  },
+  "II": {
+    spine: "bg-sky-500",
+    iconWrap: "bg-sky-50 text-sky-600",
+    chip: "bg-sky-50 text-sky-700 ring-sky-200",
+  },
+  "III": {
+    spine: "bg-violet-500",
+    iconWrap: "bg-violet-50 text-violet-600",
+    chip: "bg-violet-50 text-violet-700 ring-violet-200",
+  },
+  "IV": {
+    spine: "bg-emerald-500",
+    iconWrap: "bg-emerald-50 text-emerald-600",
+    chip: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  },
 };
 
 export function ActivityCard({
@@ -39,12 +68,10 @@ export function ActivityCard({
   resources?: Record<string, Resource>;
 }) {
   const Icon = ACT_ICONS[activity.icon] ?? Layers;
-  const isCloud = activity.part === "II";
-  const spine = isCloud ? "bg-sky-500" : "bg-indigo-500";
-  const iconWrap = isCloud ? "bg-sky-50 text-sky-600" : "bg-indigo-50 text-indigo-600";
-  const chip = isCloud
-    ? "bg-sky-50 text-sky-700 ring-sky-200"
-    : "bg-indigo-50 text-indigo-700 ring-indigo-200";
+  const theme = PART_THEMES[activity.part] ?? PART_THEMES["I"];
+  const spine = theme.spine;
+  const iconWrap = theme.iconWrap;
+  const chip = theme.chip;
   const panelId = `${activity.id}-panel`;
   const btnId = `${activity.id}-button`;
 
