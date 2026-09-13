@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AlertTriangle,
   ArrowUpRight,
   BookOpen,
   Check,
@@ -13,6 +14,7 @@ import {
   FileJson,
   GitBranch,
   Images,
+  Lightbulb,
   Link2,
   ListChecks,
   ShieldCheck,
@@ -24,6 +26,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { RESOURCES as DEFAULT_RESOURCES, TAG_STYLES } from "@/lib/curriculum";
+import { getEvaluationGuidance } from "@/lib/evaluationGuidance";
 import type { Resource, SubActivity } from "@/lib/types";
 import { Badge } from "./Badge";
 
@@ -131,6 +134,7 @@ export function SubActivityDetail({
   resources?: Record<string, Resource>;
 }) {
   const [open, setOpen] = useState(false);
+  const guidance = getEvaluationGuidance(sub);
   const tagClass = TAG_STYLES[sub.tag] ?? "bg-slate-50 text-slate-700 ring-slate-200";
   const panelId = `subactivity-${sub.id.replaceAll(".", "-")}-panel`;
   const buttonId = `subactivity-${sub.id.replaceAll(".", "-")}-button`;
@@ -240,68 +244,165 @@ export function SubActivityDetail({
         </section>
 
         <section className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4 shadow-sm sm:p-5" aria-labelledby={`${sub.id}-evaluation`}>
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-sm"><ClipboardCheck className="h-4 w-4" /></span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Check your readiness</p>
-              <h5 id={`${sub.id}-evaluation`} className="text-sm font-bold text-emerald-950">How your work is evaluated</h5>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-sm">
+                <ClipboardCheck className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Evaluation Standards &amp; Rubric</p>
+                <h5 id={`${sub.id}-evaluation`} className="text-sm font-bold text-emerald-950">How your work is evaluated</h5>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="bg-emerald-100 text-emerald-800 ring-emerald-300 font-semibold">
+                Meets Standard Threshold
+              </Badge>
+              <Badge className="bg-slate-100 text-slate-700 ring-slate-200">
+                Verifiable Assessment
+              </Badge>
             </div>
           </div>
-          <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50/70">
-            <div className="border-b border-slate-200 bg-white p-4 sm:p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <Badge className="bg-indigo-50 text-indigo-700 ring-indigo-200">Meets standard</Badge>
-                <span className="text-xs text-slate-500">Assessment threshold</span>
+
+          <div className="mt-4 space-y-4">
+            {/* 1. Student-Friendly Translation (In Plain Terms) */}
+            <div className="rounded-xl border border-emerald-200/80 bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-700">
+                <Lightbulb className="h-4 w-4 text-emerald-600" />
+                <span>In Plain Terms (What You Need to Prove)</span>
               </div>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700"><CheckCircle2 className="h-3.5 w-3.5" /> Reviewer checks what you can show</span>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                {guidance.studentExplanation}
+              </p>
             </div>
-            <p className="mt-3 text-sm font-semibold leading-6 text-slate-800">{sub.standard}</p>
-            <div className="mt-4 rounded-lg border border-indigo-100 bg-indigo-50/70 px-3 py-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Example of convincing evidence</p>
-              <p className="mt-1 text-xs leading-5 text-indigo-950">{evidenceExample(sub)}</p>
-            </div>
-            <div className="mt-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Choose the format that shows your work best</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><Presentation className="h-3.5 w-3.5 text-orange-500" /> Presentation / PPT</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><GitBranch className="h-3.5 w-3.5 text-slate-700" /> Git repository</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><Images className="h-3.5 w-3.5 text-sky-600" /> Images</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><FileText className="h-3.5 w-3.5 text-indigo-600" /> Document</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><Video className="h-3.5 w-3.5 text-rose-500" /> Demo / recording</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><Terminal className="h-3.5 w-3.5 text-emerald-600" /> Tests / API output</span>
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-700"><FileJson className="h-3.5 w-3.5 text-amber-600" /> Logs / data export</span>
+
+            {/* 2. Formal Academic Threshold & Observable Criteria */}
+            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Official Syllabus Standard
+                </span>
+                <span className="text-xs font-medium text-slate-500">Grading Baseline</span>
               </div>
-              <p className="mt-2 text-xs leading-5 text-slate-500">You may use one format or combine several. The reviewer assesses what the evidence demonstrates, not the file type.</p>
-              <div className="mt-3 grid gap-2 rounded-lg border border-slate-200 bg-white p-3 sm:grid-cols-2">
-                {["Open links and grant reviewer access", "Label files, screenshots, and key results", "Add a short note explaining what each item proves", "Remove passwords, tokens, and personal data"].map((item) => (
-                  <span key={item} className="flex items-start gap-1.5 text-xs leading-5 text-slate-600">
-                    <Check className="mt-1 h-3 w-3 shrink-0 text-emerald-600" /> {item}
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+                &ldquo;{sub.standard}&rdquo;
+              </p>
+
+              {/* What the Evaluator Checks */}
+              <div className="mt-4 border-t border-slate-100 pt-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-indigo-700">
+                  What the Reviewer Verifies (Observable Criteria):
+                </p>
+                <ul className="mt-2.5 space-y-2">
+                  {guidance.evaluatorCriteria.map((criterion, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs leading-relaxed text-slate-700">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <span>{criterion}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* 3. Concrete Evidence Guide */}
+            <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-4 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-800">
+                <FileCheck2 className="h-4 w-4 text-indigo-600" />
+                <span>Recommended Submission Blueprint</span>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-indigo-950 font-medium">
+                {guidance.concreteEvidence}
+              </p>
+
+              {/* Accepted Formats */}
+              <div className="mt-3">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-700/80">
+                  Accepted Evidence Formats:
+                </p>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <GitBranch className="h-3 w-3 text-slate-700" /> Git repository
                   </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <Terminal className="h-3 w-3 text-emerald-600" /> Tests / Output logs
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <Images className="h-3 w-3 text-sky-600" /> Labelled screenshots
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <Video className="h-3 w-3 text-rose-500" /> Screen recording / Demo
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <FileText className="h-3 w-3 text-indigo-600" /> Document / Runbook
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm ring-1 ring-slate-200">
+                    <Presentation className="h-3 w-3 text-amber-600" /> Presentation / PPT
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Common Pitfall Callout */}
+            <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 shadow-sm">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <span>Common Pitfall to Avoid</span>
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-amber-950">
+                {guidance.pitfallToAvoid}
+              </p>
+            </div>
+
+            {/* 5. Pre-Submission Verification Checklist */}
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                Pre-Submission Verification Checklist:
+              </p>
+              <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
+                {[
+                  "Permissions verified: External links and repos are accessible by reviewer",
+                  "Traceable artifacts: Screenshots, traces, and code files are clearly labelled",
+                  "Criteria satisfied: All observable items named above are visible in evidence",
+                  "Clean secrets: Passwords, personal tokens, and private keys are removed/masked",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-700">
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                    <span>{item}</span>
+                  </div>
                 ))}
               </div>
             </div>
-            </div>
-            <div className="grid sm:grid-cols-3">
-              <div className="p-4 sm:border-r sm:border-slate-200">
-                <Target className="h-4 w-4 text-rose-500" />
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Relevance</p>
-                <p className="mt-1 text-xs leading-5 text-slate-600">Your submission directly addresses the stated task and required evidence.</p>
+
+            {/* 6. Rubric Pillars Strip */}
+            <div className="grid overflow-hidden rounded-xl border border-slate-200 bg-white sm:grid-cols-3">
+              <div className="p-3.5 sm:border-r sm:border-slate-200">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                  <Target className="h-3.5 w-3.5 text-rose-500" />
+                  <span>Relevance</span>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                  Directly addresses the stated task without extraneous filler.
+                </p>
               </div>
-              <div className="border-t border-slate-200 p-4 sm:border-r sm:border-t-0">
-                <ListChecks className="h-4 w-4 text-indigo-600" />
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Completeness</p>
-                <p className="mt-1 text-xs leading-5 text-slate-600">Every element named in the standard is present and easy to locate.</p>
+              <div className="border-t border-slate-200 p-3.5 sm:border-r sm:border-t-0">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                  <ListChecks className="h-3.5 w-3.5 text-indigo-600" />
+                  <span>Completeness</span>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                  Every element required by the standard is present and easy to find.
+                </p>
               </div>
-              <div className="border-t border-slate-200 p-4 sm:border-t-0">
-                <Sparkles className="h-4 w-4 text-emerald-600" />
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">Verifiability</p>
-                <p className="mt-1 text-xs leading-5 text-slate-600">Claims are supported by working output, traces, tests, or documentation.</p>
+              <div className="border-t border-slate-200 p-3.5 sm:border-t-0">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>Verifiability</span>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                  Claims are supported by live code, real traces, or test executions.
+                </p>
               </div>
-            </div>
-            <div className="m-4 mt-0 flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs leading-5 text-emerald-900">
-              <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
-              <p><span className="font-semibold">Ready to submit?</span> Confirm the evidence is complete, opens correctly, and makes each part of the standard visible to the reviewer.</p>
             </div>
           </div>
         </section>
